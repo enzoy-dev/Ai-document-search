@@ -44,6 +44,12 @@ async def upload_document(file: UploadFile = File(...)):
         "message": "Document processed and indexed successfully"
     }
 
+@app.get("/documents")
+def list_documents():
+    return {
+        "documents": vector_store.list_documents()
+    }
+
 
 @app.get("/search")
 def search_documents(question: str):

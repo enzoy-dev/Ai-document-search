@@ -101,3 +101,21 @@ class VectorStore:
             })
 
         return results
+    def list_documents(self):
+        documents = {}
+
+        for chunk in self.chunks:
+            source = chunk["source"]
+
+            if source not in documents:
+                documents[source] = 0
+
+            documents[source] += 1
+
+        return [
+            {
+                "filename": filename,
+                "chunks": chunks
+            }
+            for filename, chunks in documents.items()
+        ]
