@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, File, UploadFile
 from sqlalchemy.orm import Session
 
 from app import models
@@ -58,3 +58,24 @@ def create_document(
 @app.get("/documents", response_model=list[DocumentResponse])
 def list_documents(db: Session = Depends(get_db)):
     return db.query(models.Document).all()
+
+
+@app.post("/documents/upload", response_model=DocumentResponse)
+async def upload_document(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    file_path = f"uploads/{file.filename}"
+
+    with open(file_path, "wb") as buffer:
+        buffer.write(await file.read())
+
+    new_document = models.Document(
+        filename=file.filename
+    )
+
+    db.add(new_document)
+    db.commit()
+    db.refresh(new_document)
+
+    return new_document
