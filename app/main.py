@@ -1,21 +1,13 @@
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from pathlib import Path
-
-from fastapi import FastAPI, File, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
+import shutil
 
 from document_processor import process_document
-from embedding_service import generate_embeddings, model
+from embedding_service import generate_embeddings
 from vector_store import VectorStore
+from app.llm import generate_answer
 
-app = FastAPI(title="AI Search API")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app = FastAPI(title="AI Document Search")
 
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
@@ -33,28 +25,49 @@ async def upload_document(file: UploadFile = File(...)):
     file_path = UPLOAD_DIR / file.filename
 
     with open(file_path, "wb") as buffer:
-        buffer.write(await file.read())
+        shutil.copyfileobj(file.file, buffer)
 
-    result = process_document(str(file_path))
+    processed = process_document(str(file_path))
 
-    embeddings = generate_embeddings(result["chunks"])
+    chunks = processed["chunks"]
+    embeddings = generate_embeddings(chunks)
 
-    vector_store.add(result["chunks"], embeddings)
+    vector_store.add(chunks, embeddings)
 
     return {
         "filename": file.filename,
-        "chunks": result["total_chunks"],
-        "status": "indexed"
+        "total_chunks": len(chunks),
+        "message": "Document processed and indexed successfully"
     }
 
 
-@app.post("/search")
-def search(question: str):
-    query_embedding = model.encode(question)
+@app.get("/search")
+def search_documents(question: str):
+    if vector_store.index.ntotal == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="No documents have been indexed yet."
+        )
 
-    results = vector_store.search(query_embedding, k=3)
+    query_embedding = generate_embeddings([question])[0]
+
+    results = vector_store.search(
+        query_embedding,
+        k=3
+    )
+
+    context = "\n\n".join(
+        result["text"]
+        for result in results
+    )
+
+    answer = generate_answer(
+        question=question,
+        context=context
+    )
 
     return {
         "question": question,
-        "results": results
+        "answer": answer,
+        "sources": results
     }
