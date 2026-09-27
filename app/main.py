@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app import models
 from app.database import Base, SessionLocal, engine
+from app.pdf import extract_text_from_pdf
 from app.schemas import DocumentCreate, DocumentResponse
 
 
@@ -69,6 +70,10 @@ async def upload_document(
 
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
+
+    extracted_text = extract_text_from_pdf(file_path)
+
+    print(extracted_text)
 
     new_document = models.Document(
         filename=file.filename

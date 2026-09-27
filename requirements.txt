@@ -4,3 +4,4 @@ sqlalchemy
 psycopg
 python-dotenv
 python-multipart
+pymupdf
