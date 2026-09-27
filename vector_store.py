@@ -12,10 +12,16 @@ class VectorStore:
         self.index_path = Path(index_path)
         self.chunks_path = Path("data/chunks.npy")
 
-        self.index_path.parent.mkdir(parents=True, exist_ok=True)
+        self.index_path.parent.mkdir(
+            parents=True,
+            exist_ok=True
+        )
 
         if self.index_path.exists() and self.chunks_path.exists():
-            self.index = faiss.read_index(str(self.index_path))
+            self.index = faiss.read_index(
+                str(self.index_path)
+            )
+
             self.chunks = np.load(
                 self.chunks_path,
                 allow_pickle=True
@@ -24,11 +30,23 @@ class VectorStore:
             self.index = faiss.IndexFlatL2(dimension)
             self.chunks = []
 
-    def add(self, chunks: list[str], embeddings):
-        vectors = np.array(embeddings).astype("float32")
+    def add(
+        self,
+        chunks: list[str],
+        embeddings,
+        source: str
+    ):
+        vectors = np.array(
+            embeddings
+        ).astype("float32")
 
         self.index.add(vectors)
-        self.chunks.extend(chunks)
+
+        for chunk in chunks:
+            self.chunks.append({
+                "text": chunk,
+                "source": source
+            })
 
         self.save()
 
@@ -40,15 +58,25 @@ class VectorStore:
 
         np.save(
             self.chunks_path,
-            np.array(self.chunks, dtype=object)
+            np.array(
+                self.chunks,
+                dtype=object
+            )
         )
 
-    def search(self, query_embedding, k: int = 3):
+    def search(
+        self,
+        query_embedding,
+        k: int = 3
+    ):
         vector = np.array(
             [query_embedding]
         ).astype("float32")
 
-        k = min(k, self.index.ntotal)
+        k = min(
+            k,
+            self.index.ntotal
+        )
 
         distances, indices = self.index.search(
             vector,
@@ -64,8 +92,11 @@ class VectorStore:
             if idx == -1:
                 continue
 
+            chunk = self.chunks[idx]
+
             results.append({
-                "text": self.chunks[idx],
+                "text": chunk["text"],
+                "source": chunk["source"],
                 "distance": float(distance)
             })
 

@@ -32,7 +32,11 @@ async def upload_document(file: UploadFile = File(...)):
     chunks = processed["chunks"]
     embeddings = generate_embeddings(chunks)
 
-    vector_store.add(chunks, embeddings)
+    vector_store.add(
+    chunks,
+    embeddings,
+    file.filename
+)
 
     return {
         "filename": file.filename,
