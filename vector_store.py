@@ -11,13 +11,18 @@ class VectorStore:
     ):
         self.index_path = Path(index_path)
         self.chunks_path = Path("data/chunks.npy")
+        self.embeddings_path = Path("data/embeddings.npy")
 
         self.index_path.parent.mkdir(
             parents=True,
             exist_ok=True
         )
 
-        if self.index_path.exists() and self.chunks_path.exists():
+        if (
+            self.index_path.exists()
+            and self.chunks_path.exists()
+            and self.embeddings_path.exists()
+        ):
             self.index = faiss.read_index(
                 str(self.index_path)
             )
@@ -26,14 +31,23 @@ class VectorStore:
                 self.chunks_path,
                 allow_pickle=True
             ).tolist()
+
+            self.embeddings = np.load(
+                self.embeddings_path
+            )
+
         else:
             self.index = faiss.IndexFlatL2(dimension)
             self.chunks = []
+            self.embeddings = np.empty(
+                (0, dimension),
+                dtype="float32"
+            )
 
     def add(
         self,
         chunks: list[str],
-        embeddings,
+        embeddings: list[list[float]]                                                           ,
         source: str
     ):
         vectors = np.array(
@@ -41,6 +55,10 @@ class VectorStore:
         ).astype("float32")
 
         self.index.add(vectors)
+
+        self.embeddings = np.vstack(
+            [self.embeddings, vectors]
+        )
 
         for chunk in chunks:
             self.chunks.append({
@@ -62,6 +80,11 @@ class VectorStore:
                 self.chunks,
                 dtype=object
             )
+        )
+
+        np.save(
+            self.embeddings_path,
+            self.embeddings
         )
 
     def search(
@@ -101,6 +124,7 @@ class VectorStore:
             })
 
         return results
+
     def list_documents(self):
         documents = {}
 
@@ -119,3 +143,35 @@ class VectorStore:
             }
             for filename, chunks in documents.items()
         ]
+
+    def delete_document(self, filename: str):
+        indexes_to_keep = [
+            i
+            for i, chunk in enumerate(self.chunks)
+            if chunk["source"] != filename
+        ]
+
+        if len(indexes_to_keep) == len(self.chunks):
+            return False
+
+        self.chunks = [
+            self.chunks[i]
+            for i in indexes_to_keep
+        ]
+
+        self.embeddings = self.embeddings[
+            indexes_to_keep
+        ]
+
+        self.index = faiss.IndexFlatL2(
+            self.embeddings.shape[1]
+        )
+
+        if len(self.embeddings) > 0:
+            self.index.add(
+                self.embeddings
+            )
+
+        self.save()
+
+        return True

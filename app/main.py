@@ -50,6 +50,21 @@ def list_documents():
         "documents": vector_store.list_documents()
     }
 
+@app.delete("/documents/{filename}")
+def delete_document(filename: str):
+    deleted = vector_store.delete_document(filename)
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found."
+        )
+
+    return {
+        "message": "Document deleted successfully",
+        "filename": filename
+    }
+
 
 @app.get("/search")
 def search_documents(question: str):
