@@ -28,6 +28,15 @@ async def upload_document(file: UploadFile = File(...)):
             detail="Only PDF files are allowed."
         )
 
+    if any(
+        document["filename"] == file.filename
+        for document in vector_store.list_documents()
+    ):
+        raise HTTPException(
+            status_code=409,
+            detail="Document already exists."
+        )
+
     file_path = UPLOAD_DIR / file.filename
 
     with open(file_path, "wb") as buffer:
