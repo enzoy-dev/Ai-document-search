@@ -22,6 +22,12 @@ def root():
 
 @app.post("/documents/upload")
 async def upload_document(file: UploadFile = File(...)):
+    if file.content_type != "application/pdf":
+        raise HTTPException(
+            status_code=400,
+            detail="Only PDF files are allowed."
+        )
+
     file_path = UPLOAD_DIR / file.filename
 
     with open(file_path, "wb") as buffer:
@@ -33,10 +39,10 @@ async def upload_document(file: UploadFile = File(...)):
     embeddings = generate_embeddings(chunks)
 
     vector_store.add(
-    chunks,
-    embeddings,
-    file.filename
-)
+        chunks,
+        embeddings,
+        file.filename
+    )
 
     return {
         "filename": file.filename,
