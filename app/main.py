@@ -99,9 +99,22 @@ def search_documents(question: str):
         k=3
     )
 
+    relevant_results = [
+        result
+        for result in results
+        if result["distance"] <= 0.95
+    ]
+
+    if not relevant_results:
+        return {
+            "question": question,
+            "answer": "No relevant information was found in the indexed documents.",
+            "sources": []
+        }
+
     context = "\n\n".join(
         result["text"]
-        for result in results
+        for result in relevant_results
     )
 
     answer = generate_answer(
@@ -112,5 +125,5 @@ def search_documents(question: str):
     return {
         "question": question,
         "answer": answer,
-        "sources": results
+        "sources": relevant_results
     }
