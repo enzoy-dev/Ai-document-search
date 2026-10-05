@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from pathlib import Path
 import shutil
+import os
 
 from document_processor import process_document
 from embedding_service import generate_embeddings
@@ -37,7 +38,9 @@ async def upload_document(file: UploadFile = File(...)):
             detail="Document already exists."
         )
 
-    file_path = UPLOAD_DIR / file.filename
+    filename = os.path.basename(file.filename)
+
+    file_path = UPLOAD_DIR / filename
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
@@ -50,11 +53,11 @@ async def upload_document(file: UploadFile = File(...)):
     vector_store.add(
         chunks,
         embeddings,
-        file.filename
+        filename
     )
 
     return {
-        "filename": file.filename,
+        "filename": filename,
         "total_chunks": len(chunks),
         "message": "Document processed and indexed successfully"
     }
