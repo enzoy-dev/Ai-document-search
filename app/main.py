@@ -4,7 +4,6 @@ import shutil
 import os
 
 from document_processor import process_document
-from embedding_service import generate_embeddings
 from vector_store import VectorStore
 from app.llm import generate_answer
 
@@ -48,6 +47,9 @@ async def upload_document(file: UploadFile = File(...)):
     processed = process_document(str(file_path))
 
     chunks = processed["chunks"]
+
+    from embedding_service import generate_embeddings
+
     embeddings = generate_embeddings(chunks)
 
     vector_store.add(
@@ -91,6 +93,8 @@ def search_documents(question: str):
             status_code=400,
             detail="No documents have been indexed yet."
         )
+ 
+    from embedding_service import generate_embeddings
 
     query_embedding = generate_embeddings([question])[0]
 
