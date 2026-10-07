@@ -149,7 +149,16 @@ def search_documents(question: str):
     )
 
     return {
-        "question": question,
-        "answer": answer,
-        "sources": relevant_results
-    }
+    "question": question,
+    "answer": answer,
+    "sources": [
+        {
+            "filename": result["source"],
+            "relevance": round(
+                1 - result["distance"],
+                3
+            )
+        }
+        for result in relevant_results
+    ]
+}
