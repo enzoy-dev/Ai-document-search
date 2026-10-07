@@ -28,8 +28,10 @@ async def upload_document(file: UploadFile = File(...)):
             detail="Only PDF files are allowed."
         )
 
+    filename = os.path.basename(file.filename)
+
     if any(
-        document["filename"] == file.filename
+        document["filename"] == filename
         for document in vector_store.list_documents()
     ):
         raise HTTPException(
@@ -37,26 +39,46 @@ async def upload_document(file: UploadFile = File(...)):
             detail="Document already exists."
         )
 
-    filename = os.path.basename(file.filename)
-
     file_path = UPLOAD_DIR / filename
 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    try:
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
 
-    processed = process_document(str(file_path))
+        processed = process_document(str(file_path))
 
-    chunks = processed["chunks"]
+        chunks = processed["chunks"]
 
-    from embedding_service import generate_embeddings
+        if not chunks:
+            raise HTTPException(
+                status_code=400,
+                detail="The PDF does not contain readable text."
+            )
 
-    embeddings = generate_embeddings(chunks)
+        from embedding_service import generate_embeddings
 
-    vector_store.add(
-        chunks,
-        embeddings,
-        filename
-    )
+        embeddings = generate_embeddings(chunks)
+
+        vector_store.add(
+            chunks,
+            embeddings,
+            filename
+        )
+
+    except HTTPException:
+        if file_path.exists():
+            file_path.unlink()
+
+        raise
+
+    except Exception:
+        if file_path.exists():
+            file_path.unlink()
+
+        raise HTTPException(
+            status_code=500,
+            detail="An error occurred while processing the document."
+        )
 
     return {
         "filename": filename,
