@@ -6,6 +6,7 @@ import os
 from document_processor import process_document
 from vector_store import VectorStore
 from app.llm import generate_answer
+from app.config import SIMILARITY_THRESHOLD
 
 app = FastAPI(title="AI Document Search")
 
@@ -128,7 +129,7 @@ def search_documents(question: str):
     relevant_results = [
         result
         for result in results
-        if result["distance"] <= 0.95
+        if result["distance"] <= SIMILARITY_THRESHOLD
     ]
 
     if not relevant_results:
