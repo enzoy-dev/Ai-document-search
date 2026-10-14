@@ -1,4 +1,4 @@
-from document_processor import process_document
+from app.document_processor import process_document
 
 
 result = process_document("uploads/EnzoSousaDosSantos_agenda4_TI_I.pdf")

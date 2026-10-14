@@ -1,6 +1,6 @@
-from document_processor import process_document
-from embedding_service import generate_embeddings, model
-from vector_store import VectorStore
+from app.document_processor import process_document
+from app.embedding_service import generate_embeddings, model
+from app.vector_store import VectorStore
 
 
 result = process_document("uploads/EnzoSousaDosSantos_agenda4_TI_I.pdf")

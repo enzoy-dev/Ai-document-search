@@ -1,5 +1,5 @@
-from document_processor import process_document
-from embedding_service import generate_embeddings
+from app.document_processor import process_document
+from app.embedding_service import generate_embeddings
 
 
 result = process_document("uploads/EnzoSousaDosSantos_agenda4_TI_I.pdf")

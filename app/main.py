@@ -3,8 +3,8 @@ from pathlib import Path
 import shutil
 import os
 
-from document_processor import process_document
-from vector_store import VectorStore
+from app.document_processor import process_document
+from app.vector_store import VectorStore
 from app.llm import generate_answer
 from app.config import SIMILARITY_THRESHOLD
 
@@ -56,7 +56,7 @@ async def upload_document(file: UploadFile = File(...)):
                 detail="The PDF does not contain readable text."
             )
 
-        from embedding_service import generate_embeddings
+        from app.embedding_service import generate_embeddings
 
         embeddings = generate_embeddings(chunks)
 
@@ -117,7 +117,7 @@ def search_documents(question: str):
             detail="No documents have been indexed yet."
         )
  
-    from embedding_service import generate_embeddings
+    from app.embedding_service import generate_embeddings
 
     query_embedding = generate_embeddings([question])[0]
 

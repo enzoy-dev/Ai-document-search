@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 
 
 # Simula o armazenamento vetorial antes de importar a API.
-vector_store_module = types.ModuleType("vector_store")
+vector_store_module = types.ModuleType("app.vector_store")
 
 
 class FakeIndex:
@@ -51,7 +51,7 @@ class FakeVectorStore:
 
 
 vector_store_module.VectorStore = FakeVectorStore
-sys.modules["vector_store"] = vector_store_module
+sys.modules["app.vector_store"] = vector_store_module
 
 # Importa o módulo da API, não apenas o objeto FastAPI.
 main_module = importlib.import_module("app.main")
@@ -66,11 +66,17 @@ def reset_vector_store():
 
 
 def install_fake_embeddings(monkeypatch):
-    module = types.ModuleType("embedding_service")
+    module = types.ModuleType("app.embedding_service")
+
     module.generate_embeddings = lambda texts: [
-        [0.1] for _ in texts
+        [0.1] * 384 for _ in texts
     ]
-    monkeypatch.setitem(sys.modules, "embedding_service", module)
+
+    monkeypatch.setitem(
+        sys.modules,
+        "app.embedding_service",
+        module
+    )
 
 
 def test_root():
