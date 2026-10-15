@@ -6,6 +6,10 @@ import types
 import pytest
 from fastapi.testclient import TestClient
 
+from app.config import API_KEY
+
+HEADERS = {"X-API-Key": API_KEY}
+
 
 # Simula o armazenamento vetorial antes de importar a API.
 vector_store_module = types.ModuleType("app.vector_store")
@@ -90,7 +94,7 @@ def test_root():
 
 
 def test_list_documents():
-    response = client.get("/documents")
+    response = client.get("/documents", headers=HEADERS)
 
     assert response.status_code == 200
     assert isinstance(response.json()["documents"], list)
@@ -99,6 +103,7 @@ def test_list_documents():
 def test_upload_non_pdf():
     response = client.post(
         "/documents/upload",
+        headers=HEADERS,
         files={
             "file": (
                 "teste.txt",
@@ -117,6 +122,7 @@ def test_upload_non_pdf():
 def test_duplicate_document():
     response = client.post(
         "/documents/upload",
+        headers=HEADERS,
         files={
             "file": (
                 "EnzoSousaDosSantos_agenda4_TI_I.pdf",
@@ -134,7 +140,8 @@ def test_duplicate_document():
 
 def test_delete_nonexistent_document():
     response = client.delete(
-        "/documents/documento-que-nao-existe.pdf"
+        "/documents/documento-que-nao-existe.pdf",
+        headers=HEADERS
     )
 
     assert response.status_code == 404
@@ -149,6 +156,7 @@ def test_search_without_documents():
     response = client.get(
         "/search",
         params={"question": "Qual é o objetivo?"},
+        headers=HEADERS
     )
 
     assert response.status_code == 400
@@ -173,6 +181,7 @@ def test_search_without_relevant_results(monkeypatch):
     response = client.get(
         "/search",
         params={"question": "Receita de bolo?"},
+        headers=HEADERS
     )
 
     assert response.status_code == 200
@@ -206,6 +215,7 @@ def test_search_with_relevant_results(monkeypatch):
     response = client.get(
         "/search",
         params={"question": "O que o sistema pesquisa?"},
+        headers=HEADERS
     )
 
     assert response.status_code == 200
@@ -213,12 +223,13 @@ def test_search_with_relevant_results(monkeypatch):
     data = response.json()
     assert data["answer"] == "O sistema pesquisa PDFs."
     assert data["sources"] == [
-        {
-            "filename": "documento.pdf",
-            "relevance": 0.667,
-            "distance": 0.5,
-        }
-    ]
+    {
+        "filename": "documento.pdf",
+        "page": None,          # nos fakes não tem página
+        "relevance": 0.667,
+        "distance": 0.5,
+    }
+]
 
 
 def test_upload_pdf_without_readable_text(monkeypatch):
@@ -234,6 +245,7 @@ def test_upload_pdf_without_readable_text(monkeypatch):
 
     response = client.post(
         "/documents/upload",
+        headers=HEADERS,
         files={
             "file": (
                 "pdf-vazio-teste.pdf",

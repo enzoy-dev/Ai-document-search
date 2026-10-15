@@ -23,15 +23,19 @@ class VectorStore:
             self.chunks = []
             self.embeddings = np.empty((0, dimension), dtype="float32")
 
-    def add(self, chunks: list[str], embeddings: list[list[float]], source: str):
+    def add(self, chunks: list[dict], embeddings: list[list[float]], source: str):
+        """
+        chunks agora é lista de {"text": str, "page": int}
+        """
         vectors = np.array(embeddings).astype("float32")
         self.index.add(vectors)
         self.embeddings = np.vstack([self.embeddings, vectors])
 
         for chunk in chunks:
             self.chunks.append({
-                "text": chunk,
+                "text": chunk["text"],
                 "source": source,
+                "page": chunk.get("page"),
             })
 
         self.save()
@@ -58,6 +62,7 @@ class VectorStore:
             results.append({
                 "text": chunk["text"],
                 "source": chunk["source"],
+                "page": chunk.get("page"),
                 "distance": float(distance),
             })
         return results

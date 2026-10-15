@@ -1,6 +1,5 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Header
 from pathlib import Path
-import shutil
 import os
 
 from app.document_processor import process_document
@@ -11,16 +10,23 @@ from app.config import (
     TOP_K,
     MAX_UPLOAD_SIZE_MB,
     UPLOAD_DIR,
+    API_KEY,
 )
 from app.embedding_service import generate_embeddings
 
 app = FastAPI(
     title="AI Document Search",
     description="Semantic document search API with RAG",
-    version="1.1.0",
+    version="1.2.0",
 )
 
 vector_store = VectorStore()
+
+
+def verify_api_key(x_api_key: str = Header(..., alias="X-API-Key")):
+    if x_api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid or missing API Key")
+    return x_api_key
 
 
 @app.get("/")
@@ -32,7 +38,7 @@ def root():
     }
 
 
-@app.post("/documents/upload")
+@app.post("/documents/upload", dependencies=[Depends(verify_api_key)])
 async def upload_document(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
@@ -42,7 +48,6 @@ async def upload_document(file: UploadFile = File(...)):
     if any(doc["filename"] == filename for doc in vector_store.list_documents()):
         raise HTTPException(status_code=409, detail="Document already exists.")
 
-    # Limite de tamanho
     content = await file.read()
     size_mb = len(content) / (1024 * 1024)
     if size_mb > MAX_UPLOAD_SIZE_MB:
@@ -58,7 +63,7 @@ async def upload_document(file: UploadFile = File(...)):
             buffer.write(content)
 
         processed = process_document(str(file_path))
-        chunks = processed["chunks"]
+        chunks = processed["chunks"]  # lista de {"text", "page"}
 
         if not chunks:
             raise HTTPException(
@@ -66,7 +71,8 @@ async def upload_document(file: UploadFile = File(...)):
                 detail="The PDF does not contain readable text.",
             )
 
-        embeddings = generate_embeddings(chunks)
+        texts = [c["text"] for c in chunks]
+        embeddings = generate_embeddings(texts)
         vector_store.add(chunks, embeddings, filename)
 
     except HTTPException:
@@ -88,19 +94,18 @@ async def upload_document(file: UploadFile = File(...)):
     }
 
 
-@app.get("/documents")
+@app.get("/documents", dependencies=[Depends(verify_api_key)])
 def list_documents():
     return {"documents": vector_store.list_documents()}
 
 
-@app.delete("/documents/{filename}")
+@app.delete("/documents/{filename}", dependencies=[Depends(verify_api_key)])
 def delete_document(filename: str):
     deleted = vector_store.delete_document(filename)
 
     if not deleted:
         raise HTTPException(status_code=404, detail="Document not found.")
 
-    # Também remove o arquivo físico se existir
     file_path = UPLOAD_DIR / filename
     if file_path.exists():
         file_path.unlink()
@@ -111,7 +116,7 @@ def delete_document(filename: str):
     }
 
 
-@app.get("/search")
+@app.get("/search", dependencies=[Depends(verify_api_key)])
 def search_documents(question: str):
     if not question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
@@ -137,7 +142,10 @@ def search_documents(question: str):
             "sources": [],
         }
 
-    context = "\n\n---\n\n".join(result["text"] for result in relevant_results)
+    context = "\n\n---\n\n".join(
+        f"[Página {r['page']}] {r['text']}" if r.get("page") else r["text"]
+        for r in relevant_results
+    )
 
     answer = generate_answer(question=question, context=context)
 
@@ -147,7 +155,8 @@ def search_documents(question: str):
         "sources": [
             {
                 "filename": result["source"],
-                "relevance": round(1 / (1 + result["distance"]), 3),  # mais legível
+                "page": result.get("page"),
+                "relevance": round(1 / (1 + result["distance"]), 3),
                 "distance": round(result["distance"], 4),
             }
             for result in relevant_results

@@ -1,25 +1,28 @@
-from pathlib import Path
 from pypdf import PdfReader
 from app.config import CHUNK_SIZE, CHUNK_OVERLAP
 
 
-def extract_text_from_pdf(file_path: str) -> str:
-    reader = PdfReader(file_path)
-    text_parts = []
-
-    for page in reader.pages:
-        page_text = page.extract_text()
-        if page_text:
-            text_parts.append(page_text)
-
-    return "\n".join(text_parts).strip()
-
-
-def split_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP) -> list[str]:
+def extract_pages_from_pdf(file_path: str) -> list[dict]:
     """
-    Chunking mais inteligente:
-    - tenta quebrar em parágrafos
-    - se o parágrafo for grande demais, quebra por tamanho com overlap
+    Retorna lista de {"page": número, "text": texto da página}
+    """
+    reader = PdfReader(file_path)
+    pages = []
+
+    for i, page in enumerate(reader.pages, start=1):
+        text = page.extract_text()
+        if text and text.strip():
+            pages.append({
+                "page": i,
+                "text": text.strip()
+            })
+
+    return pages
+
+
+def split_text_with_page(text: str, page: int, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP) -> list[dict]:
+    """
+    Quebra o texto de uma página em chunks, mantendo o número da página.
     """
     if not text:
         return []
@@ -29,43 +32,42 @@ def split_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVE
     current_chunk = ""
 
     for paragraph in paragraphs:
-        # Se o parágrafo sozinho já é maior que o chunk_size
         if len(paragraph) > chunk_size:
-            # Flush o que tinha
             if current_chunk:
-                chunks.append(current_chunk.strip())
+                chunks.append({"text": current_chunk.strip(), "page": page})
                 current_chunk = ""
 
-            # Quebra o parágrafo grande
             start = 0
             while start < len(paragraph):
                 end = start + chunk_size
-                chunk = paragraph[start:end].strip()
-                if chunk:
-                    chunks.append(chunk)
+                piece = paragraph[start:end].strip()
+                if piece:
+                    chunks.append({"text": piece, "page": page})
                 start += chunk_size - overlap
             continue
 
-        # Tenta juntar parágrafos
         if len(current_chunk) + len(paragraph) + 1 <= chunk_size:
             current_chunk = f"{current_chunk}\n{paragraph}".strip() if current_chunk else paragraph
         else:
             if current_chunk:
-                chunks.append(current_chunk.strip())
+                chunks.append({"text": current_chunk.strip(), "page": page})
             current_chunk = paragraph
 
     if current_chunk:
-        chunks.append(current_chunk.strip())
+        chunks.append({"text": current_chunk.strip(), "page": page})
 
     return chunks
 
 
 def process_document(file_path: str) -> dict:
-    text = extract_text_from_pdf(file_path)
-    chunks = split_text(text)
+    pages = extract_pages_from_pdf(file_path)
+
+    all_chunks = []
+    for page_data in pages:
+        page_chunks = split_text_with_page(page_data["text"], page_data["page"])
+        all_chunks.extend(page_chunks)
 
     return {
-        "text": text,
-        "chunks": chunks,
-        "total_chunks": len(chunks),
+        "chunks": all_chunks,          # agora é lista de dicts {"text", "page"}
+        "total_chunks": len(all_chunks),
     }

@@ -2,13 +2,17 @@ from app.document_processor import process_document
 from app.embedding_service import generate_embeddings
 
 
-result = process_document("uploads/EnzoSousaDosSantos_agenda4_TI_I.pdf")
+def test_generate_embeddings():
+    # Usa um PDF que você já tenha na pasta uploads (ou cria um mock)
+    result = process_document("uploads/EnzoSousaDosSantos_agenda4_TI_I.pdf")
 
-chunks = result["chunks"]
+    chunks = result["chunks"]
+    assert len(chunks) > 0
 
-embeddings = generate_embeddings(chunks)
+    # Agora chunks são dicts, então pegamos só o texto
+    texts = [chunk["text"] for chunk in chunks]
 
-print("Quantidade de chunks:", len(chunks))
-print("Quantidade de embeddings:", len(embeddings))
-print("Tamanho do primeiro embedding:", len(embeddings[0]))
-print("Primeiros valores:", embeddings[0][:5])
+    embeddings = generate_embeddings(texts)
+
+    assert len(embeddings) == len(texts)
+    assert len(embeddings[0]) == 384  # dimensão do all-MiniLM-L6-v2

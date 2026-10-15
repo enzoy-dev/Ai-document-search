@@ -9,8 +9,11 @@ load_dotenv(BASE_DIR / ".env")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
+# API Auth
+API_KEY = os.getenv("API_KEY", "changeme")  # mude no .env
+
 # Vector search
-SIMILARITY_THRESHOLD = float(os.getenv("SIMILARITY_THRESHOLD", "1.2"))  # L2 distance
+SIMILARITY_THRESHOLD = float(os.getenv("SIMILARITY_THRESHOLD", "1.2"))
 TOP_K = int(os.getenv("TOP_K", "4"))
 
 # Chunking
