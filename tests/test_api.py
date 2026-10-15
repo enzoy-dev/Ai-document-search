@@ -83,9 +83,10 @@ def test_root():
     response = client.get("/")
 
     assert response.status_code == 200
-    assert response.json() == {
-        "message": "AI Search API is running"
-    }
+    data = response.json()
+    assert data["message"] == "AI Search API is running"
+    assert "indexed_documents" in data
+    assert "total_chunks" in data
 
 
 def test_list_documents():
@@ -214,7 +215,8 @@ def test_search_with_relevant_results(monkeypatch):
     assert data["sources"] == [
         {
             "filename": "documento.pdf",
-            "relevance": 0.5,
+            "relevance": 0.667,
+            "distance": 0.5,
         }
     ]
 

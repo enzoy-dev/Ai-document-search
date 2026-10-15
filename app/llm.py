@@ -1,43 +1,31 @@
-import os
-from pathlib import Path
-
-from dotenv import load_dotenv
 from google import genai
+from app.config import GEMINI_API_KEY, GEMINI_MODEL
 
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-ENV_FILE = BASE_DIR / ".env"
-
-load_dotenv(ENV_FILE)
-
-api_key = os.getenv("GEMINI_API_KEY")
-
-if not api_key:
+if not GEMINI_API_KEY:
     raise ValueError("GEMINI_API_KEY not found in environment variables")
 
-client = genai.Client(api_key=api_key)
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 
 def generate_answer(question: str, context: str) -> str:
-    prompt = f"""
-Você é um assistente de perguntas e respostas baseado em documentos.
+    prompt = f"""Você é um assistente especializado em responder perguntas com base exclusivamente nos documentos fornecidos.
 
-Responda à pergunta usando somente as informações presentes no contexto abaixo.
-
-Se a resposta não estiver no contexto, diga claramente que a informação não foi encontrada no documento.
+Regras:
+- Use APENAS as informações do contexto abaixo.
+- Se a informação não estiver no contexto, diga claramente: "Não encontrei essa informação nos documentos indexados."
+- Seja direto e objetivo.
+- Responda no mesmo idioma da pergunta.
 
 Contexto:
 {context}
 
-Pergunta:
-{question}
+Pergunta: {question}
 
-Resposta:
-"""
+Resposta:"""
 
     response = client.models.generate_content(
-        model="gemini-3.5-flash-lite",
+        model=GEMINI_MODEL,
         contents=prompt,
     )
 
-    return response.text
+    return response.text.strip()
