@@ -1,10 +1,18 @@
 from google import genai
 from app.config import GEMINI_API_KEY, GEMINI_MODEL
 
-if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY not found in environment variables")
+from app.errors import ServiceUnavailableError
 
-client = genai.Client(api_key=GEMINI_API_KEY)
+_client = None
+
+
+def get_client():
+    global _client
+    if not GEMINI_API_KEY:
+        raise ServiceUnavailableError("GEMINI_API_KEY is not configured. Set it to enable generated answers.")
+    if _client is None:
+        _client = genai.Client(api_key=GEMINI_API_KEY, http_options={"timeout": 30000})
+    return _client
 
 
 def generate_answer(question: str, context: str) -> str:
@@ -23,9 +31,12 @@ Pergunta: {question}
 
 Resposta:"""
 
-    response = client.models.generate_content(
-        model=GEMINI_MODEL,
-        contents=prompt,
-    )
-
+    try:
+        response = get_client().models.generate_content(model=GEMINI_MODEL, contents=prompt)
+    except ServiceUnavailableError:
+        raise
+    except Exception as exc:
+        raise ServiceUnavailableError("Gemini request failed. Check credentials, model and network access.") from exc
+    if not response.text or not response.text.strip():
+        raise ServiceUnavailableError("Gemini returned an empty answer. Please try again.")
     return response.text.strip()

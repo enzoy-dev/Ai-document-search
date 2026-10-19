@@ -1,5 +1,8 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Header
-from pathlib import Path
+from fastapi.responses import JSONResponse
+from secrets import compare_digest
+from pypdf.errors import PdfReadError
+from app.errors import ServiceUnavailableError
 import os
 
 from app.document_processor import process_document
@@ -11,6 +14,7 @@ from app.config import (
     MAX_UPLOAD_SIZE_MB,
     UPLOAD_DIR,
     API_KEY,
+    GEMINI_API_KEY,
 )
 from app.embedding_service import generate_embeddings
 
@@ -23,8 +27,15 @@ app = FastAPI(
 vector_store = VectorStore()
 
 
-def verify_api_key(x_api_key: str = Header(..., alias="X-API-Key")):
-    if x_api_key != API_KEY:
+@app.exception_handler(ServiceUnavailableError)
+def service_unavailable(request, exc):
+    return JSONResponse(status_code=503, content={"detail": str(exc)})
+
+
+def verify_api_key(x_api_key: str | None = Header(None, alias="X-API-Key")):
+    if not API_KEY or API_KEY == "changeme":
+        raise HTTPException(status_code=503, detail="API_KEY is not configured. Set a private API key to enable protected routes.")
+    if not x_api_key or not compare_digest(x_api_key.encode(), API_KEY.encode()):
         raise HTTPException(status_code=401, detail="Invalid or missing API Key")
     return x_api_key
 
@@ -35,6 +46,8 @@ def root():
         "message": "AI Search API is running",
         "indexed_documents": len(vector_store.list_documents()),
         "total_chunks": vector_store.index.ntotal,
+        "api_key_configured": bool(API_KEY and API_KEY != "changeme"),
+        "gemini_configured": bool(GEMINI_API_KEY),
     }
 
 
@@ -43,7 +56,9 @@ async def upload_document(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
 
-    filename = os.path.basename(file.filename)
+    filename = os.path.basename(file.filename or "")
+    if filename in {"", ".", ".."}:
+        raise HTTPException(status_code=400, detail="Invalid filename.")
 
     if any(doc["filename"] == filename for doc in vector_store.list_documents()):
         raise HTTPException(status_code=409, detail="Document already exists.")
@@ -79,12 +94,18 @@ async def upload_document(file: UploadFile = File(...)):
         if file_path.exists():
             file_path.unlink()
         raise
-    except Exception as e:
+    except ServiceUnavailableError:
+        file_path.unlink(missing_ok=True)
+        raise
+    except PdfReadError:
+        file_path.unlink(missing_ok=True)
+        raise HTTPException(status_code=400, detail="The PDF is invalid or corrupted.")
+    except Exception:
         if file_path.exists():
             file_path.unlink()
         raise HTTPException(
             status_code=500,
-            detail=f"Error processing document: {str(e)}",
+            detail="Error processing document.",
         )
 
     return {
