@@ -24,6 +24,8 @@ def split_text_with_page(text: str, page: int, chunk_size: int = CHUNK_SIZE, ove
     """
     Quebra o texto de uma página em chunks, mantendo o número da página.
     """
+    if chunk_size <= 0 or not 0 <= overlap < chunk_size:
+        raise ValueError("chunk_size must be positive and overlap must be smaller than chunk_size")
     if not text:
         return []
 

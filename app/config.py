@@ -6,11 +6,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 # Gemini
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+
 # API Auth
-API_KEY = os.getenv("API_KEY", "changeme")  # mude no .env
+API_KEY = os.getenv("API_KEY", "").strip()
 
 # Vector search
 SIMILARITY_THRESHOLD = float(os.getenv("SIMILARITY_THRESHOLD", "1.2"))
@@ -25,5 +27,10 @@ MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", "15"))
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", "uploads"))
 DATA_DIR = Path(os.getenv("DATA_DIR", "data"))
 
-UPLOAD_DIR.mkdir(exist_ok=True)
-DATA_DIR.mkdir(exist_ok=True)
+if CHUNK_SIZE <= 0 or not 0 <= CHUNK_OVERLAP < CHUNK_SIZE:
+    raise ValueError("CHUNK_SIZE must be positive and CHUNK_OVERLAP must be smaller than CHUNK_SIZE")
+if TOP_K <= 0 or MAX_UPLOAD_SIZE_MB <= 0 or SIMILARITY_THRESHOLD < 0:
+    raise ValueError("TOP_K and MAX_UPLOAD_SIZE_MB must be positive; SIMILARITY_THRESHOLD cannot be negative")
+
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+DATA_DIR.mkdir(parents=True, exist_ok=True)
