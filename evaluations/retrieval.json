@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "description": "Fictional Portuguese PDFs; bilingual questions and deliberately absent facts. No personal data.",
+  "documents": [
+    "documents/energia.pdf",
+    "documents/biblioteca.pdf",
+    "documents/transporte.pdf",
+    "documents/museu.pdf"
+  ],
+  "cases": [
+    {
+      "question": "Em que cidade funciona o projeto Aurora?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "question": "Quantos painéis solares foram instalados?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "question": "Quantas famílias recebem energia do projeto?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "question": "Em que ano o projeto Aurora começou?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "question": "O que acontece com as baterias usadas?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 2
+        }
+      ]
+    },
+    {
+      "question": "Quanto tempo dura o estudo de armazenamento?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 2
+        }
+      ]
+    },
+    {
+      "question": "Qual é o horário da biblioteca Vila Azul?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "question": "Quantos livros posso pegar emprestados?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "question": "Qual é o prazo para devolver os livros?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "question": "Em que ano a biblioteca foi fundada?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 2
+        }
+      ]
+    },
+    {
+      "question": "Quantos volumes existem no acervo?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 2
+        }
+      ]
+    },
+    {
+      "question": "Quando acontece a oficina de leitura?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 2
+        }
+      ]
+    },
+    {
+      "question": "How many solar panels does the Aurora project operate?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "question": "What is the library book loan period?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "question": "How long does the battery storage study last?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 2
+        }
+      ]
+    },
+    {
+      "question": "What time is the reading workshop?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 2
+        }
+      ]
+    },
+    {
+      "question": "Qual foi o custo total do projeto Aurora?",
+      "expected": []
+    },
+    {
+      "question": "Qual é o salário do diretor da biblioteca?",
+      "expected": []
+    },
+    {
+      "question": "What is the library telephone number?",
+      "expected": []
+    },
+    {
+      "question": "Qual é a receita de um bolo de chocolate?",
+      "expected": []
+    }
+  ]
+}

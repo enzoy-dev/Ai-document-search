@@ -1,0 +1,924 @@
+{
+  "dataset_sha256": "6331669c3290bf66d0f1409f49a2283edc2e91ceefc03c5b0693ebaa8bf79129",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "model_revision": "",
+  "resolved_model_identity": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "dimension": 384,
+  "metric": "normalized_squared_l2",
+  "threshold": 1.2,
+  "top_k": 4,
+  "cases": 20,
+  "answerable_cases": 16,
+  "unanswerable_cases": 4,
+  "recall_at_k": 0.9375,
+  "accepted_recall_at_k": 0.5625,
+  "mrr_at_k": 0.6979166666666666,
+  "unanswerable_rejection_rate": 0.5,
+  "results": [
+    {
+      "question": "Em que cidade funciona o projeto Aurora?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 1
+        }
+      ],
+      "ranked": [
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 0.5540862679481506
+        },
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 1.109700322151184
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.133608341217041
+        },
+        {
+          "text": "Estudo de baterias dos ônibus\nA pesquisa de baterias tem duração de 12 meses.\nOs acumuladores usados passam por reciclagem industrial.",
+          "page": 2,
+          "source": "transporte.pdf",
+          "distance": 1.2470951080322266
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 0.5540862679481506
+        },
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 1.109700322151184
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.133608341217041
+        }
+      ]
+    },
+    {
+      "question": "Quantos painéis solares foram instalados?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 1
+        }
+      ],
+      "ranked": [
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 0.8916105031967163
+        },
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 1.047706961631775
+        },
+        {
+          "text": "Estudo de baterias dos ônibus\nA pesquisa de baterias tem duração de 12 meses.\nOs acumuladores usados passam por reciclagem industrial.",
+          "page": 2,
+          "source": "transporte.pdf",
+          "distance": 1.3161025047302246
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.342029333114624
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 0.8916105031967163
+        },
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 1.047706961631775
+        }
+      ]
+    },
+    {
+      "question": "Quantas famílias recebem energia do projeto?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 1
+        }
+      ],
+      "ranked": [
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.2085691690444946
+        },
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 1.261500358581543
+        },
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 1.2846176624298096
+        },
+        {
+          "text": "Estudo de baterias dos ônibus\nA pesquisa de baterias tem duração de 12 meses.\nOs acumuladores usados passam por reciclagem industrial.",
+          "page": 2,
+          "source": "transporte.pdf",
+          "distance": 1.303274154663086
+        }
+      ],
+      "accepted": []
+    },
+    {
+      "question": "Em que ano o projeto Aurora começou?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 1
+        }
+      ],
+      "ranked": [
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 0.5887432098388672
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.1787567138671875
+        },
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 1.2032750844955444
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.204311490058899
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 0.5887432098388672
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.1787567138671875
+        }
+      ]
+    },
+    {
+      "question": "O que acontece com as baterias usadas?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 2
+        }
+      ],
+      "ranked": [
+        {
+          "text": "Estudo de baterias dos ônibus\nA pesquisa de baterias tem duração de 12 meses.\nOs acumuladores usados passam por reciclagem industrial.",
+          "page": 2,
+          "source": "transporte.pdf",
+          "distance": 0.6963381171226501
+        },
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 0.8921350240707397
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.12884521484375
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.2120251655578613
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Estudo de baterias dos ônibus\nA pesquisa de baterias tem duração de 12 meses.\nOs acumuladores usados passam por reciclagem industrial.",
+          "page": 2,
+          "source": "transporte.pdf",
+          "distance": 0.6963381171226501
+        },
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 0.8921350240707397
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.12884521484375
+        }
+      ]
+    },
+    {
+      "question": "Quanto tempo dura o estudo de armazenamento?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 2
+        }
+      ],
+      "ranked": [
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 0.886910080909729
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.0164201259613037
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.046775221824646
+        },
+        {
+          "text": "Programa de transporte elétrico de Salvador\nO programa começou em 2020 e opera 16 ônibus elétricos.\nO intervalo entre viagens é de 45 minutos.",
+          "page": 1,
+          "source": "transporte.pdf",
+          "distance": 1.1041470766067505
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 0.886910080909729
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.0164201259613037
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.046775221824646
+        },
+        {
+          "text": "Programa de transporte elétrico de Salvador\nO programa começou em 2020 e opera 16 ônibus elétricos.\nO intervalo entre viagens é de 45 minutos.",
+          "page": 1,
+          "source": "transporte.pdf",
+          "distance": 1.1041470766067505
+        }
+      ]
+    },
+    {
+      "question": "Qual é o horário da biblioteca Vila Azul?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 1
+        }
+      ],
+      "ranked": [
+        {
+          "text": "História e atividades da biblioteca\nA biblioteca Vila Azul foi fundada em 1988.\nO acervo reúne 12 mil volumes.\nA oficina de leitura acontece aos sábados, às 10h.",
+          "page": 2,
+          "source": "biblioteca.pdf",
+          "distance": 0.4292075037956238
+        },
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 0.5456147193908691
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.0511443614959717
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.289191722869873
+        }
+      ],
+      "accepted": [
+        {
+          "text": "História e atividades da biblioteca\nA biblioteca Vila Azul foi fundada em 1988.\nO acervo reúne 12 mil volumes.\nA oficina de leitura acontece aos sábados, às 10h.",
+          "page": 2,
+          "source": "biblioteca.pdf",
+          "distance": 0.4292075037956238
+        },
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 0.5456147193908691
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.0511443614959717
+        }
+      ]
+    },
+    {
+      "question": "Quantos livros posso pegar emprestados?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 1
+        }
+      ],
+      "ranked": [
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 1.105959415435791
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.173357367515564
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.19588041305542
+        },
+        {
+          "text": "Programa de transporte elétrico de Salvador\nO programa começou em 2020 e opera 16 ônibus elétricos.\nO intervalo entre viagens é de 45 minutos.",
+          "page": 1,
+          "source": "transporte.pdf",
+          "distance": 1.346815586090088
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 1.105959415435791
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.173357367515564
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.19588041305542
+        }
+      ]
+    },
+    {
+      "question": "Qual é o prazo para devolver os livros?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 1
+        }
+      ],
+      "ranked": [
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.2205631732940674
+        },
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 1.2271835803985596
+        },
+        {
+          "text": "Programa de transporte elétrico de Salvador\nO programa começou em 2020 e opera 16 ônibus elétricos.\nO intervalo entre viagens é de 45 minutos.",
+          "page": 1,
+          "source": "transporte.pdf",
+          "distance": 1.255075216293335
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.2715249061584473
+        }
+      ],
+      "accepted": []
+    },
+    {
+      "question": "Em que ano a biblioteca foi fundada?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 2
+        }
+      ],
+      "ranked": [
+        {
+          "text": "História e atividades da biblioteca\nA biblioteca Vila Azul foi fundada em 1988.\nO acervo reúne 12 mil volumes.\nA oficina de leitura acontece aos sábados, às 10h.",
+          "page": 2,
+          "source": "biblioteca.pdf",
+          "distance": 0.5525585412979126
+        },
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 0.6777092218399048
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.0309398174285889
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.1978909969329834
+        }
+      ],
+      "accepted": [
+        {
+          "text": "História e atividades da biblioteca\nA biblioteca Vila Azul foi fundada em 1988.\nO acervo reúne 12 mil volumes.\nA oficina de leitura acontece aos sábados, às 10h.",
+          "page": 2,
+          "source": "biblioteca.pdf",
+          "distance": 0.5525585412979126
+        },
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 0.6777092218399048
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.0309398174285889
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.1978909969329834
+        }
+      ]
+    },
+    {
+      "question": "Quantos volumes existem no acervo?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 2
+        }
+      ],
+      "ranked": [
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.1945545673370361
+        },
+        {
+          "text": "História e atividades da biblioteca\nA biblioteca Vila Azul foi fundada em 1988.\nO acervo reúne 12 mil volumes.\nA oficina de leitura acontece aos sábados, às 10h.",
+          "page": 2,
+          "source": "biblioteca.pdf",
+          "distance": 1.393097162246704
+        },
+        {
+          "text": "Programa de transporte elétrico de Salvador\nO programa começou em 2020 e opera 16 ônibus elétricos.\nO intervalo entre viagens é de 45 minutos.",
+          "page": 1,
+          "source": "transporte.pdf",
+          "distance": 1.4179781675338745
+        },
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 1.5919806957244873
+        }
+      ],
+      "accepted": [
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.1945545673370361
+        }
+      ]
+    },
+    {
+      "question": "Quando acontece a oficina de leitura?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 2
+        }
+      ],
+      "ranked": [
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.027809500694275
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.2324390411376953
+        },
+        {
+          "text": "Estudo de baterias dos ônibus\nA pesquisa de baterias tem duração de 12 meses.\nOs acumuladores usados passam por reciclagem industrial.",
+          "page": 2,
+          "source": "transporte.pdf",
+          "distance": 1.261240839958191
+        },
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 1.305022954940796
+        }
+      ],
+      "accepted": [
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.027809500694275
+        }
+      ]
+    },
+    {
+      "question": "How many solar panels does the Aurora project operate?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 1
+        }
+      ],
+      "ranked": [
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 0.8643854856491089
+        },
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 1.439453125
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.7218940258026123
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.7623488903045654
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 0.8643854856491089
+        }
+      ]
+    },
+    {
+      "question": "What is the library book loan period?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 1
+        }
+      ],
+      "ranked": [
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 1.2919058799743652
+        },
+        {
+          "text": "História e atividades da biblioteca\nA biblioteca Vila Azul foi fundada em 1988.\nO acervo reúne 12 mil volumes.\nA oficina de leitura acontece aos sábados, às 10h.",
+          "page": 2,
+          "source": "biblioteca.pdf",
+          "distance": 1.3117930889129639
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.690674066543579
+        },
+        {
+          "text": "Programa de transporte elétrico de Salvador\nO programa começou em 2020 e opera 16 ônibus elétricos.\nO intervalo entre viagens é de 45 minutos.",
+          "page": 1,
+          "source": "transporte.pdf",
+          "distance": 1.7382699251174927
+        }
+      ],
+      "accepted": []
+    },
+    {
+      "question": "How long does the battery storage study last?",
+      "expected": [
+        {
+          "filename": "energia.pdf",
+          "page": 2
+        }
+      ],
+      "ranked": [
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 1.5977283716201782
+        },
+        {
+          "text": "Estudo de baterias dos ônibus\nA pesquisa de baterias tem duração de 12 meses.\nOs acumuladores usados passam por reciclagem industrial.",
+          "page": 2,
+          "source": "transporte.pdf",
+          "distance": 1.671424388885498
+        },
+        {
+          "text": "Pesquisa de armazenamento de energia\nA equipe estuda o uso de baterias para armazenar energia solar.\nO estudo tem duração de 24 meses.\nAs baterias usadas são encaminhadas para reciclagem especializada.",
+          "page": 2,
+          "source": "energia.pdf",
+          "distance": 1.6840274333953857
+        },
+        {
+          "text": "História e atividades da biblioteca\nA biblioteca Vila Azul foi fundada em 1988.\nO acervo reúne 12 mil volumes.\nA oficina de leitura acontece aos sábados, às 10h.",
+          "page": 2,
+          "source": "biblioteca.pdf",
+          "distance": 1.737457275390625
+        }
+      ],
+      "accepted": []
+    },
+    {
+      "question": "What time is the reading workshop?",
+      "expected": [
+        {
+          "filename": "biblioteca.pdf",
+          "page": 2
+        }
+      ],
+      "ranked": [
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 1.3278353214263916
+        },
+        {
+          "text": "História e atividades da biblioteca\nA biblioteca Vila Azul foi fundada em 1988.\nO acervo reúne 12 mil volumes.\nA oficina de leitura acontece aos sábados, às 10h.",
+          "page": 2,
+          "source": "biblioteca.pdf",
+          "distance": 1.417504072189331
+        },
+        {
+          "text": "Programa de transporte elétrico de Salvador\nO programa começou em 2020 e opera 16 ônibus elétricos.\nO intervalo entre viagens é de 45 minutos.",
+          "page": 1,
+          "source": "transporte.pdf",
+          "distance": 1.4437098503112793
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.519212245941162
+        }
+      ],
+      "accepted": []
+    },
+    {
+      "question": "Qual foi o custo total do projeto Aurora?",
+      "expected": [],
+      "ranked": [
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 0.7394441366195679
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.0719701051712036
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.206407070159912
+        },
+        {
+          "text": "Programa de transporte elétrico de Salvador\nO programa começou em 2020 e opera 16 ônibus elétricos.\nO intervalo entre viagens é de 45 minutos.",
+          "page": 1,
+          "source": "transporte.pdf",
+          "distance": 1.286811113357544
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 0.7394441366195679
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.0719701051712036
+        }
+      ]
+    },
+    {
+      "question": "Qual é o salário do diretor da biblioteca?",
+      "expected": [],
+      "ranked": [
+        {
+          "text": "História e atividades da biblioteca\nA biblioteca Vila Azul foi fundada em 1988.\nO acervo reúne 12 mil volumes.\nA oficina de leitura acontece aos sábados, às 10h.",
+          "page": 2,
+          "source": "biblioteca.pdf",
+          "distance": 0.6206942796707153
+        },
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 0.6660317182540894
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.1243040561676025
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.2313292026519775
+        }
+      ],
+      "accepted": [
+        {
+          "text": "História e atividades da biblioteca\nA biblioteca Vila Azul foi fundada em 1988.\nO acervo reúne 12 mil volumes.\nA oficina de leitura acontece aos sábados, às 10h.",
+          "page": 2,
+          "source": "biblioteca.pdf",
+          "distance": 0.6206942796707153
+        },
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 0.6660317182540894
+        },
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.1243040561676025
+        }
+      ]
+    },
+    {
+      "question": "What is the library telephone number?",
+      "expected": [],
+      "ranked": [
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 1.3415842056274414
+        },
+        {
+          "text": "História e atividades da biblioteca\nA biblioteca Vila Azul foi fundada em 1988.\nO acervo reúne 12 mil volumes.\nA oficina de leitura acontece aos sábados, às 10h.",
+          "page": 2,
+          "source": "biblioteca.pdf",
+          "distance": 1.4062435626983643
+        },
+        {
+          "text": "Programa de transporte elétrico de Salvador\nO programa começou em 2020 e opera 16 ônibus elétricos.\nO intervalo entre viagens é de 45 minutos.",
+          "page": 1,
+          "source": "transporte.pdf",
+          "distance": 1.686747431755066
+        },
+        {
+          "text": "Projeto Aurora de energia solar\nO projeto Aurora começou em 2025 na cidade de Recife.\nForam instalados 700 painéis solares.\nA energia produzida atende 120 famílias da comunidade.",
+          "page": 1,
+          "source": "energia.pdf",
+          "distance": 1.865330457687378
+        }
+      ],
+      "accepted": []
+    },
+    {
+      "question": "Qual é a receita de um bolo de chocolate?",
+      "expected": [],
+      "ranked": [
+        {
+          "text": "História e acervo do museu\nO museu foi fundado em 1995 e tem 20 mil peças no acervo.\nAs oficinas de pintura acontecem às sextas, às 14h.",
+          "page": 2,
+          "source": "museu.pdf",
+          "distance": 1.2350621223449707
+        },
+        {
+          "text": "Centro cultural e museu de Fortaleza\nO centro abre de segunda a sexta, das 9h às 20h.\nAs peças emprestadas devem ser devolvidas em sete dias.",
+          "page": 1,
+          "source": "museu.pdf",
+          "distance": 1.2609424591064453
+        },
+        {
+          "text": "Estudo de baterias dos ônibus\nA pesquisa de baterias tem duração de 12 meses.\nOs acumuladores usados passam por reciclagem industrial.",
+          "page": 2,
+          "source": "transporte.pdf",
+          "distance": 1.30571448802948
+        },
+        {
+          "text": "Biblioteca comunitária Vila Azul\nA biblioteca abre de segunda a sábado, das 9h às 18h.\nCada leitor pode pegar até três livros por vez.\nO prazo de empréstimo dos livros é de 14 dias.",
+          "page": 1,
+          "source": "biblioteca.pdf",
+          "distance": 1.3141499757766724
+        }
+      ],
+      "accepted": []
+    }
+  ]
+}

@@ -27,6 +27,8 @@ def test_model_load_error_is_actionable(monkeypatch):
     import sys
     constructor = Mock(side_effect=OSError('private path'))
     monkeypatch.setitem(sys.modules, 'sentence_transformers', SimpleNamespace(SentenceTransformer=constructor))
+    import huggingface_hub
+    monkeypatch.setattr(huggingface_hub, 'hf_hub_download', lambda *args, **kwargs: '/cache/snapshots/test-revision/modules.json')
     monkeypatch.setattr(service, '_model', None)
     with pytest.raises(ServiceUnavailableError, match='model cache') as exc:
         service.get_model()
