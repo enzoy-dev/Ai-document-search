@@ -6,3 +6,6 @@ uploads/
 data/
 .pytest_cache/
 .cache/
+
+# Locally generated benchmark reports
+evaluations/results/

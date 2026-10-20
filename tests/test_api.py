@@ -43,7 +43,7 @@ def test_upload_search_persist_and_delete(api, monkeypatch, sample_pdf, fake_emb
     from app.vector_store import VectorStore
     client, main = api
     monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
-    answer = Mock(return_value='The project researches renewable energy.')
+    answer = Mock(return_value='The project researches renewable energy. [S1] [S2]')
     monkeypatch.setattr(main, 'generate_answer', answer)
     assert upload(client, sample_pdf).status_code == 200
     assert client.get('/documents', headers=HEADERS).json()['documents'] == [{'filename': 'sample.pdf', 'chunks': 2}]
@@ -123,3 +123,95 @@ def test_upload_size_limit(api, monkeypatch, sample_pdf):
     monkeypatch.setattr(main, 'MAX_UPLOAD_SIZE_MB', 0.00001)
     assert upload(client, sample_pdf).status_code == 413
     assert not (main.UPLOAD_DIR / 'sample.pdf').exists()
+
+
+def test_retrieval_works_without_gemini(api, monkeypatch, sample_pdf, fake_embeddings):
+    client, main = api
+    monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
+    assert upload(client, sample_pdf).status_code == 200
+    monkeypatch.setattr(main, 'generate_answer', Mock(side_effect=AssertionError('Must not call Gemini')))
+    result = client.get('/retrieve', headers=HEADERS, params={'question': 'Aurora?'})
+    assert result.status_code == 200
+    sources = result.json()['sources']
+    assert [s['citation_id'] for s in sources] == ['S1', 'S2']
+    assert 'renewable energy' in sources[0]['text']
+
+
+@pytest.mark.parametrize('answer', ['Unsupported statement.', 'Claim [S999].'])
+def test_unverifiable_answer_is_not_returned(api, monkeypatch, sample_pdf, fake_embeddings, answer):
+    client, main = api
+    monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
+    assert upload(client, sample_pdf).status_code == 200
+    monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: answer)
+    result = client.get('/search', headers=HEADERS, params={'question': 'Aurora?'})
+    assert result.status_code == 503 and 'citations' in result.json()['detail']
+
+
+def test_sources_only_include_cited_evidence(api, monkeypatch, sample_pdf, fake_embeddings):
+    client, main = api
+    monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
+    assert upload(client, sample_pdf).status_code == 200
+    monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: 'Renewable energy. [S1]')
+    result = client.get('/search', headers=HEADERS, params={'question': 'Aurora?'})
+    assert result.status_code == 200
+    assert len(result.json()['sources']) == 1
+    assert result.json()['sources'][0]['citation_id'] == 'S1'
+
+
+def test_upload_processing_runs_off_event_loop(api, monkeypatch, sample_pdf, fake_embeddings):
+    client, main = api
+    monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
+    original = main.process_document
+    def check(path):
+        import asyncio
+        with pytest.raises(RuntimeError):
+            asyncio.get_running_loop()
+        return original(path)
+    monkeypatch.setattr(main, 'process_document', check)
+    assert upload(client, sample_pdf).status_code == 200
+    assert list(main.UPLOAD_DIR.iterdir()) == []
+    assert main.vector_store.get_pdf('sample.pdf') == sample_pdf.read_bytes()
+
+
+def test_concurrent_api_uploads_do_not_overwrite_or_delete_each_other(api, monkeypatch, sample_pdf, fake_embeddings):
+    from concurrent.futures import ThreadPoolExecutor
+    client, main = api
+    monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        codes = list(pool.map(lambda _: upload(client, sample_pdf).status_code, range(2)))
+    assert sorted(codes) == [200, 409]
+    assert main.vector_store.index.ntotal == 2
+    assert main.vector_store.get_pdf('sample.pdf') == sample_pdf.read_bytes()
+    assert list(main.UPLOAD_DIR.iterdir()) == []
+
+
+def test_upload_reads_in_bounded_chunks(api, monkeypatch):
+    import io
+    from starlette.datastructures import UploadFile, Headers
+    from fastapi import HTTPException
+    import asyncio
+    client, main = api
+    monkeypatch.setattr(main, 'MAX_UPLOAD_SIZE_MB', 0.1)
+    requested = []
+    class BoundedUpload(UploadFile):
+        async def read(self, size=-1):
+            requested.append(size)
+            assert 0 < size <= 64 * 1024
+            return await super().read(size)
+    file = BoundedUpload(io.BytesIO(b'x' * 200000), filename='large.pdf',
+                         headers=Headers({'content-type': 'application/pdf'}))
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(main.upload_document(file))
+    assert exc.value.status_code == 413
+    assert len(requested) == 2
+    assert list(main.UPLOAD_DIR.iterdir()) == []
+
+
+def test_model_refusal_does_not_claim_sources(api, monkeypatch, sample_pdf, fake_embeddings):
+    from app.retrieval import NO_ANSWER
+    client, main = api
+    monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
+    assert upload(client, sample_pdf).status_code == 200
+    monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: NO_ANSWER)
+    result = client.get('/search', headers=HEADERS, params={'question': 'Unknown fact?'})
+    assert result.status_code == 200 and result.json()['sources'] == []

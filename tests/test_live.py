@@ -21,5 +21,5 @@ def test_real_gemini():
     from app.llm import generate_answer
     if not GEMINI_API_KEY:
         pytest.skip('GEMINI_API_KEY is required for the live Gemini test')
-    answer = generate_answer('In which year did the project start?', 'Project Aurora started in 2024.')
+    answer = generate_answer('In which year did the project start?', '[S1] Document: sample.pdf; page: 1. Project Aurora started in 2024.')
     assert '2024' in answer

@@ -1,0 +1,107 @@
+%PDF-1.3
+%âãÏÓ
+1 0 obj
+<<
+/Producer (pypdf)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 2
+/Kids [ 4 0 R 7 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 5 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 612 792 ]
+/Parent 2 0 R
+/Contents 6 0 R
+>>
+endobj
+5 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+>>
+endobj
+6 0 obj
+<<
+/Length 209
+>>
+stream
+BT /F1 12 Tf 40 740 Td
+(Centro cultural e museu de Fortaleza) Tj 0 -24 Td
+(O centro abre de segunda a sexta, das 9h às 20h.) Tj 0 -24 Td
+(As peças emprestadas devem ser devolvidas em sete dias.) Tj 0 -24 Td
+ET
+endstream
+endobj
+7 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 8 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 612 792 ]
+/Parent 2 0 R
+/Contents 9 0 R
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+>>
+endobj
+9 0 obj
+<<
+/Length 204
+>>
+stream
+BT /F1 12 Tf 40 740 Td
+(História e acervo do museu) Tj 0 -24 Td
+(O museu foi fundado em 1995 e tem 20 mil peças no acervo.) Tj 0 -24 Td
+(As oficinas de pintura acontecem às sextas, às 14h.) Tj 0 -24 Td
+ET
+endstream
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000054 00000 n 
+0000000119 00000 n 
+0000000168 00000 n 
+0000000300 00000 n 
+0000000397 00000 n 
+0000000657 00000 n 
+0000000789 00000 n 
+0000000886 00000 n 
+trailer
+<<
+/Size 10
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+1141
+%%EOF

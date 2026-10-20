@@ -47,14 +47,15 @@ Documentation is at `/docs`, and OpenAPI at `/openapi.json`. Do not expose the s
 | `GEMINI_API_KEY` | Required only for generated answers |
 | `GEMINI_MODEL` | Default: `gemini-3.5-flash-lite`; account availability must be verified |
 | `EMBEDDING_MODEL` | Default: `sentence-transformers/all-MiniLM-L6-v2`; may be a local path to a compatible 384-dimensional model |
+| `EMBEDDING_REVISION` | Optional remote model ref/commit; the resolved weight commit is recorded and verified |
 | `HF_HOME` | Optional persistent Hugging Face cache directory |
-| `SIMILARITY_THRESHOLD` | Maximum squared L2 distance; default `1.2` |
+| `SIMILARITY_THRESHOLD` | Maximum normalized squared L2 distance; default `1.2` |
 | `TOP_K` | Maximum retrieved chunks; positive integer, default `4` |
 | `CHUNK_SIZE` | Positive chunk size in characters; default `800` |
 | `CHUNK_OVERLAP` | Overlap in characters, from zero to less than chunk size; default `150` |
 | `MAX_UPLOAD_SIZE_MB` | Positive upload size limit; default `15` |
-| `UPLOAD_DIR` | Uploaded files; default `uploads`, relative to the working directory |
-| `DATA_DIR` | Persistent FAISS index and metadata; default `data`, relative to the working directory |
+| `UPLOAD_DIR` | Temporary upload staging; default `uploads`, relative to the working directory |
+| `DATA_DIR` | Transactional SQLite database and revisioned FAISS cache; default `data`, relative to the working directory |
 
 Model loading happens only on the first embedding request. Use a writable persistent `HF_HOME` to reuse downloads. Required network destinations include Hugging Face and its model storage/CDN hosts, plus `generativelanguage.googleapis.com` for Gemini. A cached compatible model can be used without network access to Hugging Face.
 
@@ -68,6 +69,7 @@ For installation/model troubleshooting, retain TLS and download verification; do
 | POST | `/documents/upload` | `X-API-Key` |
 | GET | `/documents` | `X-API-Key` |
 | DELETE | `/documents/{filename}` | `X-API-Key` |
+| GET | `/retrieve?question=...` | `X-API-Key` (no Gemini call) |
 | GET | `/search?question=...` | `X-API-Key` |
 
 Supply your configured key using the `X-API-Key` header. The health response reports whether keys are configured without returning their values; it does not contact Gemini or download a model, so it is not an end-to-end readiness test.
@@ -83,7 +85,7 @@ curl --fail-with-body --get http://127.0.0.1:8000/search \
   --data-urlencode 'question=What does Project Aurora research?'
 ```
 
-Answers include source filenames, page numbers, squared L2 distance and a relevance value calculated as `1 / (1 + distance)`. This relevance value is not a probability or a calibrated confidence score. The PDF contains fictional project information and has no personal data.
+Answers include validated citation IDs such as `[S1]`, source filenames, page numbers, the exact retrieved text, normalized squared L2 distance and a relevance value calculated as `1 / (1 + distance)`. Both indexed and query vectors are explicitly normalized, so the distance is `2 - 2*cosine_similarity`. Only cited retrieved sources are returned with generated answers. Unknown or missing citation IDs cause a 503 instead of returning an unverifiable answer. This verifies source identifiers, not that every factual claim is supported; human review and answer-quality evaluation are still necessary. This relevance value is not a probability or a calibrated confidence score. The PDF contains fictional project information and has no personal data.
 
 Expected errors:
 
@@ -91,6 +93,7 @@ Expected errors:
 - `503`: server API key is absent/uses `changeme`, the embedding model cannot load, Gemini is missing/unavailable, or the provider returns an empty answer.
 - `400`: invalid PDF, PDF without extractable text, blank question, or no indexed documents.
 - `409`: duplicate document filename.
+- `503`: a storage failure or incompatible model/index identity (check logs/configuration and reindex when necessary).
 - `413`: upload exceeds the size limit.
 
 Without a Gemini key, upload/list/delete can still work if the API key and embedding model are available. Search only calls Gemini when relevant chunks are found. Scanned PDFs need OCR, which is not included.
@@ -102,9 +105,9 @@ python -m pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-The default suite requires no Gemini credentials, model download or external PDF. It uses the included two-page fixture, real PDF extraction and real FAISS persistence. Only embeddings and Gemini responses are simulated. Tests use temporary upload/index directories and block outbound socket connections. They do not modify your indexed documents.
+The default suite requires no Gemini credentials, model download or external PDF. It uses the included two-page fixture, real PDF extraction and real FAISS persistence. Only embeddings and Gemini responses are simulated. Tests use temporary upload/index directories and block outbound socket connections. They do not modify your indexed documents. The original personal PDF filename has also been removed from the experiment script; use `python -m experiments.vector_search path/to/any.pdf --question "Your question"` for an isolated experiment.
 
-The upload → index → search → answer → delete test checks source pages and reopens the saved FAISS index. Other tests cover authentication, missing configuration, corrupt/blank PDFs, upload size, chunk settings, provider errors and cleanup after embedding failure. These tests verify integration wiring, not the semantic quality of the real model or answers.
+The upload → index → search → answer → delete test checks source pages and reopens the SQLite-backed index. Storage tests inject write/delete failures, crash a subprocess before commit, and exercise simultaneous uploads and cache refresh across store instances. Other tests cover authentication, missing configuration, corrupt/blank PDFs, upload size, chunk settings, provider errors and cleanup after embedding failure. These tests verify integration wiring, not the semantic quality of the real model or answers.
 
 ### Optional live checks
 
@@ -120,6 +123,45 @@ The embedding test downloads/loads the real model and checks a basic semantic ra
 
 The **Offline tests** workflow runs the default suite for pushes and Pull Requests, with Hugging Face offline mode enabled and no API keys. It does not download the embedding model or call Gemini. Installation still downloads Python dependencies.
 
+## Storage upgrade and model identity
+
+The source of truth is now `DATA_DIR/documents.sqlite3`. Each transaction stores the PDF bytes, page-aware text and embeddings together. Deletion removes all three atomically. A failed write leaves the previous database unchanged; an in-memory FAISS snapshot is never mutated before commit. Do not manually edit the database or copy a live SQLite file without its WAL state; use SQLite's backup API or stop the service before backing up the entire data directory.
+
+Model identifier, configured revision, vector dimension, metric and the actual resolved weight identity are stored. Remote weights are loaded from an exact Hugging Face commit; local model directories are fingerprinted by content. A model/ref/weight change is rejected rather than silently mixing incompatible embeddings. Keep local model directories immutable. Reindex into a **new** `DATA_DIR` to switch models, keeping the old collection as a backup.
+
+### Existing three-file indexes
+
+Startup detects the old `faiss.index` / `chunks.npy` / `embeddings.npy` layout and refuses to silently replace it with an empty index. Stop the old service and back up the whole data directory and original PDFs first. If all three files are consistent and you know the original embedding model and weight commit:
+
+```bash
+python -m app.migrate_legacy \
+  --data-dir data --uploads-dir uploads \
+  --legacy-model sentence-transformers/all-MiniLM-L6-v2 \
+  --legacy-revision ORIGINAL_WEIGHT_COMMIT \
+  --trust-legacy-pickle
+```
+
+Replace `ORIGINAL_WEIGHT_COMMIT` with the actual original revision, not a guessed current revision. Configure `EMBEDDING_MODEL` and `EMBEDDING_REVISION` to match before starting the API. The explicit trust flag is required because the old metadata format uses pickle; only use it for your own trusted files. The importer validates counts and vectors, normalizes embeddings to the new metric, builds the database privately and publishes it only after success. It never overwrites an existing SQLite database and preserves all legacy files. Existing original PDFs are copied into SQLite when available.
+
+If the files are incomplete, inconsistent or the original model revision is unknown, restore a consistent backup or start with a **new empty data directory** and upload the original PDFs again. Do not delete the old collection to make startup pass.
+
+## Retrieval evaluation
+
+The [benchmark](evaluations/README.md) contains four fictional Portuguese PDFs with eight pages, including related distractors, and 20 bilingual questions. It measures source retrieval without calling Gemini:
+
+```bash
+python -m experiments.evaluate_retrieval --output evaluations/results/baseline.json
+```
+
+The [committed baseline reports](evaluations/baselines) use real models at recorded weight commits, normalized vectors, top-k 4 and threshold 1.2:
+
+| Model | Recall@4 before threshold | Correct evidence accepted (16 questions) | MRR@4 | Unanswerable queries rejected (4 questions) |
+| --- | --- | --- | --- | --- |
+| all-MiniLM-L6-v2 (current default) | 93.75% | 9/16 | 0.698 | 2/4 |
+| paraphrase-multilingual-MiniLM-L12-v2 | 100% | 15/16 | 0.896 | 1/4 |
+
+The multilingual model retrieved more labeled evidence but rejected fewer unanswerable queries. These are small development-set results, not general accuracy claims or Gemini-answer scores. The default model is unchanged; validate on additional held-out PDFs before changing the model/threshold. Changing the model requires reindexing, not reusing the old vectors.
+
 ## Docker
 
 The Dockerfile uses Python 3.12 and CPU PyTorch, matching local setup:
@@ -130,7 +172,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Compose retains uploads, index data and a model cache. It binds port 8000 to loopback for local development. Do not add multiple workers or replicas sharing the same files: the current FAISS persistence is intended for a single process and does not provide atomic snapshots across its three files. Multi-worker consistency and disk-failure recovery require a separate storage change.
+Compose retains the transactional database, temporary-upload directory and a model cache. PDFs, text and embeddings are now committed together in SQLite; uploaded PDFs are not kept as a second independently updated file. It binds port 8000 to loopback for local development. SQLite serializes writers, and FAISS caches are refreshed against a transaction revision. Concurrent readers use coherent snapshots. Use a local filesystem with working SQLite locks; this is not a distributed/network-filesystem storage design. Index rebuilding still loads the stored embeddings into memory, so a much larger collection needs a different scaling strategy.
 
 If your build network uses a corporate TLS proxy, provide its trusted CA bundle using BuildKit's optional `build_ca` secret rather than disabling verification:
 
@@ -145,7 +187,10 @@ Proxy settings can be forwarded with the standard `--build-arg HTTP_PROXY --buil
 - `app/main.py`: API routes and authentication.
 - `app/document_processor.py`: PDF extraction and page-aware chunking.
 - `app/embedding_service.py`: lazy model loading and embeddings.
-- `app/vector_store.py`: FAISS storage and persistence.
+- `app/vector_store.py`: transactional SQLite source of truth and rebuildable FAISS cache.
+- `app/migrate_legacy.py`: explicit legacy migration; originals stay intact.
+- `app/retrieval.py`: evidence labels, context and citation validation.
+- `evaluations/`: PDFs, labeled questions and real-model baseline reports.
 - `app/llm.py`: lazy Gemini client and answer generation.
 - `tests/fixtures/sample.pdf`: reproducible, fictional two-page document.
 - `tests/test_live.py`: optional checks against real external services.

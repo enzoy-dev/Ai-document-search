@@ -1,12 +1,16 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Header
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Header, Query
 from fastapi.responses import JSONResponse
+from starlette.concurrency import run_in_threadpool
+from pathlib import Path
+import tempfile
+import sqlite3
 from secrets import compare_digest
 from pypdf.errors import PdfReadError
 from app.errors import ServiceUnavailableError
 import os
 
 from app.document_processor import process_document
-from app.vector_store import VectorStore
+from app.vector_store import VectorStore, DuplicateDocumentError, StorageError
 from app.llm import generate_answer
 from app.config import (
     SIMILARITY_THRESHOLD,
@@ -16,7 +20,8 @@ from app.config import (
     API_KEY,
     GEMINI_API_KEY,
 )
-from app.embedding_service import generate_embeddings
+from app.embedding_service import generate_embeddings, get_model_identity
+from app.retrieval import evidence_from_results, make_context, cited_sources, NO_ANSWER
 
 app = FastAPI(
     title="AI Document Search",
@@ -25,6 +30,12 @@ app = FastAPI(
 )
 
 vector_store = VectorStore()
+
+
+@app.exception_handler(sqlite3.Error)
+@app.exception_handler(StorageError)
+def storage_failure(request, exc):
+    return JSONResponse(status_code=503, content={"detail": "Document storage is unavailable. Check disk space, permissions and model configuration."})
 
 
 @app.exception_handler(ServiceUnavailableError)
@@ -63,56 +74,49 @@ async def upload_document(file: UploadFile = File(...)):
     if any(doc["filename"] == filename for doc in vector_store.list_documents()):
         raise HTTPException(status_code=409, detail="Document already exists.")
 
-    content = await file.read()
-    size_mb = len(content) / (1024 * 1024)
-    if size_mb > MAX_UPLOAD_SIZE_MB:
-        raise HTTPException(
-            status_code=413,
-            detail=f"File too large. Maximum allowed is {MAX_UPLOAD_SIZE_MB}MB.",
-        )
-
-    file_path = UPLOAD_DIR / filename
-
+    temporary = None
     try:
-        with open(file_path, "wb") as buffer:
-            buffer.write(content)
-
-        processed = process_document(str(file_path))
-        chunks = processed["chunks"]  # lista de {"text", "page"}
-
-        if not chunks:
-            raise HTTPException(
-                status_code=400,
-                detail="The PDF does not contain readable text.",
-            )
-
-        texts = [c["text"] for c in chunks]
-        embeddings = generate_embeddings(texts)
-        vector_store.add(chunks, embeddings, filename)
-
-    except HTTPException:
-        if file_path.exists():
-            file_path.unlink()
-        raise
-    except ServiceUnavailableError:
-        file_path.unlink(missing_ok=True)
-        raise
+        # Read in bounded chunks. Nothing becomes visible before the SQLite commit.
+        size = 0
+        with tempfile.NamedTemporaryFile(dir=UPLOAD_DIR, suffix=".pdf", delete=False) as output:
+            temporary = Path(output.name)
+            while True:
+                content = await file.read(64 * 1024)
+                if not content:
+                    break
+                size += len(content)
+                if size > MAX_UPLOAD_SIZE_MB * 1024 * 1024:
+                    raise HTTPException(status_code=413, detail=f"File too large. Maximum allowed is {MAX_UPLOAD_SIZE_MB}MB.")
+                await run_in_threadpool(output.write, content)
+        chunks_count = await run_in_threadpool(index_upload, temporary, filename)
+    except DuplicateDocumentError:
+        raise HTTPException(status_code=409, detail="Document already exists.")
     except PdfReadError:
-        file_path.unlink(missing_ok=True)
         raise HTTPException(status_code=400, detail="The PDF is invalid or corrupted.")
+    except (HTTPException, ServiceUnavailableError, StorageError, sqlite3.Error):
+        raise
     except Exception:
-        if file_path.exists():
-            file_path.unlink()
-        raise HTTPException(
-            status_code=500,
-            detail="Error processing document.",
-        )
+        raise HTTPException(status_code=500, detail="Error processing document.")
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+        await file.close()
 
     return {
         "filename": filename,
-        "total_chunks": len(chunks),
+        "total_chunks": chunks_count,
         "message": "Document processed and indexed successfully",
     }
+
+
+def index_upload(path, filename):
+    processed = process_document(str(path))
+    chunks = processed["chunks"]
+    if not chunks:
+        raise HTTPException(status_code=400, detail="The PDF does not contain readable text.")
+    embeddings = generate_embeddings([chunk["text"] for chunk in chunks])
+    vector_store.add(chunks, embeddings, filename, pdf_bytes=path.read_bytes(), encoder_identity=get_model_identity())
+    return len(chunks)
 
 
 @app.get("/documents", dependencies=[Depends(verify_api_key)])
@@ -127,59 +131,30 @@ def delete_document(filename: str):
     if not deleted:
         raise HTTPException(status_code=404, detail="Document not found.")
 
-    file_path = UPLOAD_DIR / filename
-    if file_path.exists():
-        file_path.unlink()
-
     return {
         "message": "Document deleted successfully",
         "filename": filename,
     }
 
 
-@app.get("/search", dependencies=[Depends(verify_api_key)])
-def search_documents(question: str):
+def retrieve(question):
     if not question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
-
     if vector_store.index.ntotal == 0:
-        raise HTTPException(
-            status_code=400,
-            detail="No documents have been indexed yet.",
-        )
-
+        raise HTTPException(status_code=400, detail="No documents have been indexed yet.")
     query_embedding = generate_embeddings([question])[0]
-    results = vector_store.search(query_embedding, k=TOP_K)
+    return evidence_from_results(vector_store.search(query_embedding, k=TOP_K, encoder_identity=get_model_identity()), SIMILARITY_THRESHOLD)
 
-    relevant_results = [
-        result for result in results
-        if result["distance"] <= SIMILARITY_THRESHOLD
-    ]
 
-    if not relevant_results:
-        return {
-            "question": question,
-            "answer": "No relevant information was found in the indexed documents.",
-            "sources": [],
-        }
+@app.get("/retrieve", dependencies=[Depends(verify_api_key)])
+def retrieve_documents(question: str = Query(..., min_length=1, max_length=2000)):
+    return {"question": question, "sources": retrieve(question)}
 
-    context = "\n\n---\n\n".join(
-        f"[Página {r['page']}] {r['text']}" if r.get("page") else r["text"]
-        for r in relevant_results
-    )
 
-    answer = generate_answer(question=question, context=context)
-
-    return {
-        "question": question,
-        "answer": answer,
-        "sources": [
-            {
-                "filename": result["source"],
-                "page": result.get("page"),
-                "relevance": round(1 / (1 + result["distance"]), 3),
-                "distance": round(result["distance"], 4),
-            }
-            for result in relevant_results
-        ],
-    }
+@app.get("/search", dependencies=[Depends(verify_api_key)])
+def search_documents(question: str = Query(..., min_length=1, max_length=2000)):
+    sources = retrieve(question)
+    if not sources:
+        return {"question": question, "answer": "No relevant information was found in the indexed documents.", "sources": []}
+    answer = generate_answer(question=question, context=make_context(sources))
+    return {"question": question, "answer": answer, "sources": cited_sources(answer, sources)}

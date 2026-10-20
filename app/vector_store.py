@@ -1,100 +1,185 @@
+"""SQLite is authoritative; FAISS is a disposable, revisioned search cache."""
+from contextlib import contextmanager
+from dataclasses import dataclass
+from pathlib import Path
+import sqlite3
+from threading import RLock
+
 import faiss
 import numpy as np
-from pathlib import Path
-from app.config import DATA_DIR
+
+from app.config import DATA_DIR, EMBEDDING_MODEL, EMBEDDING_REVISION
+
+
+class StorageError(RuntimeError):
+    pass
+
+
+class DuplicateDocumentError(StorageError):
+    pass
+
+
+class ModelMismatchError(StorageError):
+    pass
+
+
+@dataclass(frozen=True)
+class Snapshot:
+    revision: int
+    index: object
+    chunks: tuple
 
 
 class VectorStore:
-    def __init__(self, dimension: int = 384):
-        self.index_path = DATA_DIR / "faiss.index"
-        self.chunks_path = DATA_DIR / "chunks.npy"
-        self.embeddings_path = DATA_DIR / "embeddings.npy"
-
-        if (
-            self.index_path.exists()
-            and self.chunks_path.exists()
-            and self.embeddings_path.exists()
+    def __init__(self, dimension=384, directory=None, model=None, revision=None, *, allow_legacy=False):
+        if type(dimension) is not int or dimension <= 0:
+            raise ValueError("Embedding dimension must be a positive integer")
+        self.directory = Path(directory if directory is not None else DATA_DIR)
+        self.directory.mkdir(parents=True, exist_ok=True)
+        self.path = self.directory / 'documents.sqlite3'
+        self.dimension = dimension
+        self.model = model if model is not None else EMBEDDING_MODEL
+        self.model_revision = revision if revision is not None else EMBEDDING_REVISION
+        self._lock = RLock()
+        self._cache = None
+        if not self.path.exists() and not allow_legacy and any(
+            (self.directory / name).exists() for name in ('faiss.index', 'chunks.npy', 'embeddings.npy')
         ):
-            self.index = faiss.read_index(str(self.index_path))
-            self.chunks = np.load(self.chunks_path, allow_pickle=True).tolist()
-            self.embeddings = np.load(self.embeddings_path)
-        else:
-            self.index = faiss.IndexFlatL2(dimension)
-            self.chunks = []
-            self.embeddings = np.empty((0, dimension), dtype="float32")
+            raise StorageError('Legacy index detected. Back up the data and run python -m app.migrate_legacy; no files were overwritten.')
+        with self._connection() as connection:
+            connection.execute('PRAGMA journal_mode=WAL')
+            connection.execute('BEGIN IMMEDIATE')
+            version = connection.execute('PRAGMA user_version').fetchone()[0]
+            if version not in (0, 1):
+                raise StorageError('Unsupported storage version. Restore a compatible database backup.')
+            connection.execute('''CREATE TABLE IF NOT EXISTS metadata (
+                id INTEGER PRIMARY KEY CHECK(id=1), model TEXT NOT NULL, model_revision TEXT NOT NULL,
+                dimension INTEGER NOT NULL, metric TEXT NOT NULL, revision INTEGER NOT NULL, encoder_identity TEXT NOT NULL DEFAULT '')''')
+            connection.execute('''CREATE TABLE IF NOT EXISTS documents (
+                id INTEGER PRIMARY KEY, filename TEXT NOT NULL UNIQUE, pdf BLOB)''')
+            connection.execute('''CREATE TABLE IF NOT EXISTS chunks (
+                id INTEGER PRIMARY KEY, document_id INTEGER NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+                text TEXT NOT NULL, page INTEGER, embedding BLOB NOT NULL)''')
+            connection.execute('CREATE INDEX IF NOT EXISTS chunks_document ON chunks(document_id)')
+            connection.execute('INSERT OR IGNORE INTO metadata(id, model, model_revision, dimension, metric, revision) VALUES (1, ?, ?, ?, ?, 0)',
+                               (self.model, self.model_revision, self.dimension, 'normalized_squared_l2'))
+            connection.execute('PRAGMA user_version=1')
+            self._validate_identity(connection)
 
-    def add(self, chunks: list[dict], embeddings: list[list[float]], source: str):
-        """
-        chunks agora é lista de {"text": str, "page": int}
-        """
-        vectors = np.array(embeddings).astype("float32")
-        self.index.add(vectors)
-        self.embeddings = np.vstack([self.embeddings, vectors])
+    @contextmanager
+    def _connection(self):
+        connection = sqlite3.connect(self.path, timeout=30)
+        connection.execute('PRAGMA foreign_keys=ON')
+        try:
+            with connection:
+                yield connection
+        finally:
+            connection.close()
 
-        for chunk in chunks:
-            self.chunks.append({
-                "text": chunk["text"],
-                "source": source,
-                "page": chunk.get("page"),
-            })
+    def _validate_identity(self, connection):
+        identity = connection.execute('SELECT model, model_revision, dimension, metric FROM metadata WHERE id=1').fetchone()
+        if identity != (self.model, self.model_revision, self.dimension, 'normalized_squared_l2'):
+            raise ModelMismatchError('Embedding model/revision/dimension changed. Use the original configuration or reindex PDFs into a new DATA_DIR.')
 
-        self.save()
+    def _check_encoder(self, connection, identity, *, creating=False):
+        if identity is None:
+            return
+        stored = connection.execute('SELECT encoder_identity FROM metadata WHERE id=1').fetchone()[0]
+        if not stored:
+            if connection.execute('SELECT count(*) FROM chunks').fetchone()[0]:
+                raise ModelMismatchError('Stored embeddings have no verified model revision. Reindex the original PDFs into a new DATA_DIR.')
+            if creating:
+                connection.execute('UPDATE metadata SET encoder_identity=? WHERE id=1', (identity,))
+        elif stored != identity:
+            raise ModelMismatchError('Loaded embedding weights differ from the index. Restore the original model revision or reindex the PDFs.')
 
-    def save(self):
-        faiss.write_index(self.index, str(self.index_path))
-        np.save(self.chunks_path, np.array(self.chunks, dtype=object))
-        np.save(self.embeddings_path, self.embeddings)
+    def _vectors(self, embeddings):
+        vectors = np.asarray(embeddings, dtype='float32')
+        if vectors.ndim != 2 or vectors.shape[1] != self.dimension or not np.isfinite(vectors).all():
+            raise ValueError(f'Embeddings must contain finite vectors of dimension {self.dimension}')
+        norms = np.linalg.norm(vectors, axis=1, keepdims=True)
+        if not np.isfinite(norms).all():
+            raise ValueError('Embedding norms must be finite')
+        if np.any(norms <= np.finfo('float32').tiny):
+            raise ValueError('Embeddings must have nonzero norm')
+        return vectors / norms
 
-    def search(self, query_embedding, k: int = 4):
-        vector = np.array([query_embedding]).astype("float32")
-        k = min(k, self.index.ntotal)
+    def _insert(self, connection, chunks, embeddings, source, pdf_bytes):
+        vectors = self._vectors(embeddings)
+        if not chunks or len(chunks) != len(vectors):
+            raise ValueError('Each nonempty document chunk must have exactly one embedding')
+        if not source or Path(source).name != source or source in {'.', '..'}:
+            raise ValueError('Invalid document filename')
+        if any(not isinstance(chunk.get('text'), str) or not chunk['text'].strip()
+               or (chunk.get('page') is not None and (type(chunk['page']) is not int or chunk['page'] <= 0))
+               for chunk in chunks):
+            raise ValueError('Chunks require readable text and positive page numbers')
+        try:
+            doc_id = connection.execute('INSERT INTO documents(filename, pdf) VALUES (?, ?)',
+                                        (source, pdf_bytes)).lastrowid
+        except sqlite3.IntegrityError as exc:
+            raise DuplicateDocumentError('Document already exists.') from exc
+        connection.executemany('INSERT INTO chunks(document_id, text, page, embedding) VALUES (?, ?, ?, ?)',
+                               [(doc_id, chunk['text'], chunk.get('page'), vector.astype('<f4').tobytes())
+                                for chunk, vector in zip(chunks, vectors)])
 
-        if k == 0:
+    def add(self, chunks, embeddings, source, pdf_bytes=None, encoder_identity=None):
+        with self._connection() as connection:
+            connection.execute('BEGIN IMMEDIATE')
+            self._validate_identity(connection)
+            self._check_encoder(connection, encoder_identity, creating=True)
+            self._insert(connection, chunks, embeddings, source, pdf_bytes)
+            connection.execute('UPDATE metadata SET revision=revision+1 WHERE id=1')
+        # No shared state is mutated before commit. Other instances observe the revision.
+
+    def snapshot(self, encoder_identity=None):
+        with self._lock, self._connection() as connection:
+            connection.execute('BEGIN')
+            self._validate_identity(connection)
+            self._check_encoder(connection, encoder_identity)
+            revision = connection.execute('SELECT revision FROM metadata WHERE id=1').fetchone()[0]
+            if self._cache is not None and self._cache.revision == revision:
+                return self._cache
+            rows = connection.execute('''SELECT c.text, c.page, c.embedding, d.filename
+                FROM chunks c JOIN documents d ON d.id=c.document_id ORDER BY c.id''').fetchall()
+            index = faiss.IndexFlatL2(self.dimension)
+            if rows:
+                vectors = np.stack([np.frombuffer(row[2], dtype='<f4') for row in rows])
+                index.add(self._vectors(vectors))
+            chunks = tuple({'text': row[0], 'page': row[1], 'source': row[3]} for row in rows)
+            self._cache = Snapshot(revision, index, chunks)
+            return self._cache
+
+    @property
+    def index(self):
+        return self.snapshot().index
+
+    def search(self, query_embedding, k=4, encoder_identity=None):
+        if k <= 0:
+            raise ValueError('k must be positive')
+        vector = self._vectors([query_embedding])
+        snapshot = self.snapshot(encoder_identity)
+        if not snapshot.chunks:
             return []
-
-        distances, indices = self.index.search(vector, k)
-
-        results = []
-        for idx, distance in zip(indices[0], distances[0]):
-            if idx == -1:
-                continue
-            chunk = self.chunks[idx]
-            results.append({
-                "text": chunk["text"],
-                "source": chunk["source"],
-                "page": chunk.get("page"),
-                "distance": float(distance),
-            })
-        return results
+        distances, indices = snapshot.index.search(vector, min(k, len(snapshot.chunks)))
+        return [{**snapshot.chunks[int(idx)], 'distance': max(0.0, float(distance))}
+                for idx, distance in zip(indices[0], distances[0])]
 
     def list_documents(self):
-        documents = {}
-        for chunk in self.chunks:
-            source = chunk["source"]
-            documents[source] = documents.get(source, 0) + 1
+        with self._connection() as connection:
+            return [{'filename': name, 'chunks': count} for name, count in connection.execute('''
+                SELECT d.filename, COUNT(c.id) FROM documents d JOIN chunks c ON c.document_id=d.id
+                GROUP BY d.id ORDER BY d.id''')]
 
-        return [
-            {"filename": filename, "chunks": count}
-            for filename, count in documents.items()
-        ]
+    def delete_document(self, filename):
+        with self._connection() as connection:
+            connection.execute('BEGIN IMMEDIATE')
+            deleted = connection.execute('DELETE FROM documents WHERE filename=?', (filename,)).rowcount
+            if deleted:
+                connection.execute('UPDATE metadata SET revision=revision+1 WHERE id=1')
+            return bool(deleted)
 
-    def delete_document(self, filename: str) -> bool:
-        indexes_to_keep = [
-            i for i, chunk in enumerate(self.chunks)
-            if chunk["source"] != filename
-        ]
-
-        if len(indexes_to_keep) == len(self.chunks):
-            return False
-
-        self.chunks = [self.chunks[i] for i in indexes_to_keep]
-        self.embeddings = self.embeddings[indexes_to_keep]
-
-        dimension = self.embeddings.shape[1] if len(self.embeddings) > 0 else 384
-        self.index = faiss.IndexFlatL2(dimension)
-
-        if len(self.embeddings) > 0:
-            self.index.add(self.embeddings)
-
-        self.save()
-        return True
+    def get_pdf(self, filename):
+        with self._connection() as connection:
+            row = connection.execute('SELECT pdf FROM documents WHERE filename=?', (filename,)).fetchone()
+            return row[0] if row else None

@@ -1,0 +1,109 @@
+%PDF-1.3
+%âãÏÓ
+1 0 obj
+<<
+/Producer (pypdf)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 2
+/Kids [ 4 0 R 7 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 5 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 612 792 ]
+/Parent 2 0 R
+/Contents 6 0 R
+>>
+endobj
+5 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+>>
+endobj
+6 0 obj
+<<
+/Length 263
+>>
+stream
+BT /F1 12 Tf 40 740 Td
+(Biblioteca comunitária Vila Azul) Tj 0 -24 Td
+(A biblioteca abre de segunda a sábado, das 9h às 18h.) Tj 0 -24 Td
+(Cada leitor pode pegar até três livros por vez.) Tj 0 -24 Td
+(O prazo de empréstimo dos livros é de 14 dias.) Tj 0 -24 Td
+ET
+endstream
+endobj
+7 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 8 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 612 792 ]
+/Parent 2 0 R
+/Contents 9 0 R
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+>>
+endobj
+9 0 obj
+<<
+/Length 243
+>>
+stream
+BT /F1 12 Tf 40 740 Td
+(História e atividades da biblioteca) Tj 0 -24 Td
+(A biblioteca Vila Azul foi fundada em 1988.) Tj 0 -24 Td
+(O acervo reúne 12 mil volumes.) Tj 0 -24 Td
+(A oficina de leitura acontece aos sábados, às 10h.) Tj 0 -24 Td
+ET
+endstream
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000054 00000 n 
+0000000119 00000 n 
+0000000168 00000 n 
+0000000300 00000 n 
+0000000397 00000 n 
+0000000711 00000 n 
+0000000843 00000 n 
+0000000940 00000 n 
+trailer
+<<
+/Size 10
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+1234
+%%EOF

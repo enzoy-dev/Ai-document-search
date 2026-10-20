@@ -36,6 +36,7 @@ def api(monkeypatch, tmp_path):
     monkeypatch.setattr(vector_store, 'DATA_DIR', data)
     monkeypatch.setattr(main, 'vector_store', vector_store.VectorStore())
     monkeypatch.setattr(main, 'API_KEY', 'unit-test-api-key')
+    monkeypatch.setattr(main, 'get_model_identity', lambda: 'offline-fixture-v1')
     with TestClient(main.app) as client:
         yield client, main
 

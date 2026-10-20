@@ -25,7 +25,7 @@ assert 'sentence_transformers' not in sys.modules
 @pytest.mark.parametrize('settings', [
     {'CHUNK_SIZE': '0'}, {'CHUNK_SIZE': '10', 'CHUNK_OVERLAP': '10'},
     {'CHUNK_OVERLAP': '-1'}, {'TOP_K': '0'}, {'MAX_UPLOAD_SIZE_MB': '0'},
-    {'SIMILARITY_THRESHOLD': '-1'},
+    {'SIMILARITY_THRESHOLD': '-1'}, {'SIMILARITY_THRESHOLD': 'nan'}, {'SIMILARITY_THRESHOLD': 'inf'},
 ])
 def test_invalid_config_fails_early(settings):
     result = run_python('import app.config', **settings)
