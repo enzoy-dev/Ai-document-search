@@ -1,0 +1,309 @@
+{
+  "version": 2,
+  "description": "Original fictional holdout: policy, technical runbook and public schedule. Created after the original model comparison; no tuning on this set. Small diagnostic, not a general accuracy estimate.",
+  "documents": [
+    "documents/reembolsos.pdf",
+    "documents/operacao_atlas.pdf",
+    "documents/observatorio.pdf"
+  ],
+  "cases": [
+    {
+      "id": "holdout-01",
+      "kind": "answerable",
+      "question": "Qual é o limite diário de alimentação?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 1
+        }
+      ],
+      "answer_keywords": [
+        "180"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-02",
+      "kind": "answerable",
+      "question": "Qual é o limite por diária de hospedagem?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 1
+        }
+      ],
+      "answer_keywords": [
+        "250"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-03",
+      "kind": "answerable",
+      "question": "Bebidas alcoólicas são reembolsadas?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 1
+        }
+      ],
+      "answer_keywords": [
+        "não"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-04",
+      "kind": "answerable",
+      "question": "Em quantos dias devo solicitar o reembolso após retornar?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 2
+        }
+      ],
+      "answer_keywords": [
+        "10"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-05",
+      "kind": "answerable",
+      "question": "Quanto tempo o financeiro tem para pagar após a aprovação?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 2
+        }
+      ],
+      "answer_keywords": [
+        "7",
+        "úteis"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-06",
+      "kind": "answerable",
+      "question": "What is the daily meal reimbursement limit?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 1
+        }
+      ],
+      "answer_keywords": [
+        "180"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-07",
+      "kind": "answerable",
+      "question": "Quando ocorre a manutenção do serviço Atlas?",
+      "expected": [
+        {
+          "filename": "operacao_atlas.pdf",
+          "page": 1
+        }
+      ],
+      "answer_keywords": [
+        "02",
+        "UTC"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-08",
+      "kind": "answerable",
+      "question": "Quantas verificações de latência acionam o alerta?",
+      "expected": [
+        {
+          "filename": "operacao_atlas.pdf",
+          "page": 1
+        }
+      ],
+      "answer_keywords": [
+        "três"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-09",
+      "kind": "answerable",
+      "question": "Por quantos dias os backups são retidos?",
+      "expected": [
+        {
+          "filename": "operacao_atlas.pdf",
+          "page": 2
+        }
+      ],
+      "answer_keywords": [
+        "14"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-10",
+      "kind": "answerable",
+      "question": "Qual é o objetivo de recuperação do Atlas em minutos?",
+      "expected": [
+        {
+          "filename": "operacao_atlas.pdf",
+          "page": 2
+        }
+      ],
+      "answer_keywords": [
+        "35"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-11",
+      "kind": "answerable",
+      "question": "What is the maximum data-loss objective for Atlas?",
+      "expected": [
+        {
+          "filename": "operacao_atlas.pdf",
+          "page": 2
+        }
+      ],
+      "answer_keywords": [
+        "24"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-12",
+      "kind": "answerable",
+      "question": "Em quais dias acontecem as visitas públicas ao observatório?",
+      "expected": [
+        {
+          "filename": "observatorio.pdf",
+          "page": 1
+        }
+      ],
+      "answer_keywords": [
+        "sextas"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-13",
+      "kind": "answerable",
+      "question": "Qual é a capacidade de uma sessão de visita?",
+      "expected": [
+        {
+          "filename": "observatorio.pdf",
+          "page": 1
+        }
+      ],
+      "answer_keywords": [
+        "24"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-14",
+      "kind": "answerable",
+      "question": "Qual é a idade mínima para visitar o observatório?",
+      "expected": [
+        {
+          "filename": "observatorio.pdf",
+          "page": 1
+        }
+      ],
+      "answer_keywords": [
+        "12"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-15",
+      "kind": "answerable",
+      "question": "Quanto tempo dura a oficina de astronomia?",
+      "expected": [
+        {
+          "filename": "observatorio.pdf",
+          "page": 2
+        }
+      ],
+      "answer_keywords": [
+        "90"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-16",
+      "kind": "answerable",
+      "question": "What language is the astronomy workshop presented in?",
+      "expected": [
+        {
+          "filename": "observatorio.pdf",
+          "page": 2
+        }
+      ],
+      "answer_keywords": [
+        "Portuguese"
+      ],
+      "expected_status": "answered"
+    },
+    {
+      "id": "holdout-17",
+      "kind": "unanswerable",
+      "question": "Qual é a senha de produção do Atlas?",
+      "expected": [],
+      "expected_status": "not_found"
+    },
+    {
+      "id": "holdout-18",
+      "kind": "unanswerable",
+      "question": "Qual é o salário da direção do observatório?",
+      "expected": [],
+      "expected_status": "not_found"
+    },
+    {
+      "id": "holdout-19",
+      "kind": "unanswerable",
+      "question": "What is the reimbursement portal URL?",
+      "expected": [],
+      "expected_status": "not_found"
+    },
+    {
+      "id": "holdout-20",
+      "kind": "unanswerable",
+      "question": "Qual é o telefone do observatório?",
+      "expected": [],
+      "expected_status": "not_found"
+    },
+    {
+      "id": "holdout-21",
+      "kind": "ambiguous",
+      "question": "Qual é o limite?",
+      "expected": [],
+      "expected_status": "needs_clarification"
+    },
+    {
+      "id": "holdout-22",
+      "kind": "ambiguous",
+      "question": "Qual é o prazo?",
+      "expected": [],
+      "expected_status": "needs_clarification"
+    },
+    {
+      "id": "holdout-23",
+      "kind": "ambiguous",
+      "question": "Quando acontece a atividade?",
+      "expected": [],
+      "expected_status": "needs_clarification"
+    },
+    {
+      "id": "holdout-24",
+      "kind": "ambiguous",
+      "question": "What is the schedule?",
+      "expected": [],
+      "expected_status": "needs_clarification"
+    }
+  ]
+}

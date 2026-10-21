@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Busque informações em PDFs e confira os trechos e páginas utilizados."
+    />
+    <title>AI Document Search · Pergunte aos seus documentos</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="/ui"
+        ><span class="brand-icon" aria-hidden="true">◈</span
+        ><span>Document<br /><strong>Search</strong></span></a
+      >
+      <p class="eyebrow">SEU ESPAÇO DE PESQUISA</p>
+      <h2>Documentos <span id="document-count" class="count">0</span></h2>
+      <p id="document-help" class="muted">Conecte sua coleção para começar.</p>
+      <form id="connection-form">
+        <label for="api-key">Chave de acesso</label>
+        <input
+          id="api-key"
+          type="password"
+          autocomplete="off"
+          placeholder="Sua chave privada"
+          required
+        />
+        <button class="secondary" type="submit">Conectar coleção</button>
+        <p class="fine-print">
+          A chave fica apenas nesta aba e não é salva no navegador.
+        </p>
+      </form>
+      <div
+        id="document-list"
+        class="document-list"
+        aria-label="Documentos disponíveis"
+      ></div>
+      <form id="upload-form" hidden>
+        <label class="upload-label" for="pdf-file"
+          ><span aria-hidden="true">＋</span> Adicionar PDF</label
+        >
+        <input
+          id="pdf-file"
+          type="file"
+          accept="application/pdf,.pdf"
+          required
+        />
+        <p id="upload-limit" class="fine-print"></p>
+        <button class="secondary" type="submit">Enviar e processar</button>
+      </form>
+      <div id="upload-progress" role="status" hidden>
+        <progress aria-label="Processando documento"></progress>
+        <p>Lendo e indexando o PDF…</p>
+      </div>
+      <div class="sidebar-footer">
+        <span class="status-dot" aria-hidden="true"></span> Fontes disponíveis
+        para conferência<br /><a
+          href="https://github.com/enzoy-dev/Ai-document-search"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Projeto de Enzo Santos</a
+        >
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <span>AI Document Search</span
+        ><span id="mode-badge" class="badge">Coleção privada</span>
+      </header>
+      <div class="workspace">
+        <section class="intro" aria-labelledby="title">
+          <p class="eyebrow">PESQUISA COM EVIDÊNCIAS</p>
+          <h1 id="title">Encontre respostas<br />nos seus documentos.</h1>
+          <p>
+            Faça uma pergunta e confira os trechos e as páginas encontrados.
+          </p>
+        </section>
+
+        <div id="notice" class="notice" hidden></div>
+        <div id="error" class="error" role="alert" hidden></div>
+
+        <section class="question-card" aria-label="Faça uma pergunta">
+          <form id="question-form">
+            <label for="question">O que você quer descobrir?</label>
+            <textarea
+              id="question"
+              rows="3"
+              maxlength="2000"
+              placeholder="Ex.: Qual é o prazo para devolver os livros?"
+              required
+            ></textarea>
+            <div class="question-actions">
+              <fieldset>
+                <legend class="sr-only">Tipo de consulta</legend>
+                <label class="radio"
+                  ><input
+                    type="radio"
+                    name="search-mode"
+                    value="retrieve"
+                    checked
+                  />
+                  Buscar trechos</label
+                >
+                <label class="radio"
+                  ><input
+                    id="generation-mode"
+                    type="radio"
+                    name="search-mode"
+                    value="search"
+                    disabled
+                  />
+                  Gerar resposta</label
+                >
+              </fieldset>
+              <button id="ask-button" class="primary" type="submit">
+                Pesquisar
+                <svg
+                  aria-hidden="true"
+                  focusable="false"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path d="M3 13 13 3M3 3h10v10" />
+                </svg>
+              </button>
+            </div>
+            <p id="generation-help" class="fine-print">
+              A busca de trechos funciona sem um modelo de geração.
+            </p>
+          </form>
+        </section>
+
+        <section id="examples" class="examples" hidden>
+          <p>Experimente uma pergunta</p>
+          <div id="example-buttons"></div>
+        </section>
+        <div id="search-progress" class="search-progress" role="status" hidden>
+          <progress aria-label="Pesquisando"></progress>
+          <p>
+            Buscando evidências… A primeira consulta pode levar mais tempo para
+            carregar o modelo.
+          </p>
+        </div>
+
+        <section
+          id="results"
+          class="results"
+          aria-live="polite"
+          aria-busy="false"
+          hidden
+        >
+          <div class="result-heading">
+            <p class="eyebrow">RESULTADO DA CONSULTA</p>
+            <span id="result-kind" class="badge"></span>
+          </div>
+          <h2 id="result-title"></h2>
+          <p id="answer" class="answer"></p>
+          <div id="sources" class="sources"></div>
+        </section>
+
+        <section id="pdf-panel" class="pdf-panel" hidden>
+          <div class="pdf-toolbar">
+            <h2 id="pdf-title">Documento original</h2>
+            <div>
+              <a id="pdf-download" class="text-link" download>Baixar PDF</a
+              ><button
+                id="close-pdf"
+                class="icon-button"
+                aria-label="Fechar documento"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+          <p class="fine-print">
+            O visualizador do navegador pode abrir na página indicada. Se
+            necessário, navegue até ela no próprio PDF.
+          </p>
+          <iframe id="pdf-viewer" title="Visualização do PDF original"></iframe>
+        </section>
+
+        <footer class="workspace-footer">
+          Confira as fontes antes de usar uma resposta. A busca pode encontrar
+          trechos relacionados que não respondem à pergunta.
+        </footer>
+      </div>
+    </main>
+  </body>
+</html>

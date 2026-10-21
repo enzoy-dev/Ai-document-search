@@ -14,7 +14,7 @@ def run_python(code, **settings):
 def test_cold_import_without_keys_or_model():
     result = run_python('''
 import sys
-from app.main import root
+from app.main import health as root
 assert root()['gemini_configured'] is False
 assert root()['api_key_configured'] is False
 assert 'sentence_transformers' not in sys.modules

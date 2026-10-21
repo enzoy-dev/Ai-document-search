@@ -1,0 +1,1177 @@
+{
+  "dataset_sha256": "b501ef994762b4b953d3121c95347adb48beab037d2a77bb430c8eb2d940344d",
+  "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "model_revision": "",
+  "resolved_model_identity": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+  "dimension": 384,
+  "metric": "normalized_squared_l2",
+  "threshold": 1.2,
+  "top_k": 4,
+  "mean_retrieval_ms": 25.836,
+  "cases": 24,
+  "answerable_cases": 16,
+  "unanswerable_cases": 4,
+  "ambiguous_cases": 4,
+  "recall_at_k": 1.0,
+  "accepted_recall_at_k": 1.0,
+  "precision_at_k": 0.25,
+  "accepted_precision_at_k": 0.6614583333333334,
+  "mrr_at_k": 1.0,
+  "unanswerable_rejection_rate": 0.0,
+  "ambiguous_evidence_acceptance_rate": 0.75,
+  "results": [
+    {
+      "question": "Qual é o limite diário de alimentação?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 1
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 1.0043022632598877
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.562268614768982
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.5714051723480225
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.6200313568115234
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 1.0043022632598877
+        }
+      ],
+      "retrieval_ms": 18.052
+    },
+    {
+      "question": "Qual é o limite por diária de hospedagem?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 1
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 1.105005145072937
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.1901698112487793
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.2295198440551758
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.3287198543548584
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 1.105005145072937
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.1901698112487793
+        }
+      ],
+      "retrieval_ms": 22.763
+    },
+    {
+      "question": "Bebidas alcoólicas são reembolsadas?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 1
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 0.9473189115524292
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.5817298889160156
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.7212953567504883
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.888136863708496
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 0.9473189115524292
+        }
+      ],
+      "retrieval_ms": 18.988
+    },
+    {
+      "question": "Em quantos dias devo solicitar o reembolso após retornar?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 2
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 0.7385181784629822
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.928632378578186
+        },
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 1.1365774869918823
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.3966152667999268
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 0.7385181784629822
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.928632378578186
+        },
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 1.1365774869918823
+        }
+      ],
+      "retrieval_ms": 44.353
+    },
+    {
+      "question": "Quanto tempo o financeiro tem para pagar após a aprovação?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 2
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 0.6211917400360107
+        },
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 1.2490794658660889
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.3985681533813477
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.5022947788238525
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 0.6211917400360107
+        }
+      ],
+      "retrieval_ms": 15.69
+    },
+    {
+      "question": "What is the daily meal reimbursement limit?",
+      "expected": [
+        {
+          "filename": "reembolsos.pdf",
+          "page": 1
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 0.760834813117981
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.2525219917297363
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.378490686416626
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.700023889541626
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 0.760834813117981
+        }
+      ],
+      "retrieval_ms": 16.849
+    },
+    {
+      "question": "Quando ocorre a manutenção do serviço Atlas?",
+      "expected": [
+        {
+          "filename": "operacao_atlas.pdf",
+          "page": 1
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.6555686593055725
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.7208775281906128
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.1314326524734497
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.2649180889129639
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.6555686593055725
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.7208775281906128
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.1314326524734497
+        }
+      ],
+      "retrieval_ms": 17.383
+    },
+    {
+      "question": "Quantas verificações de latência acionam o alerta?",
+      "expected": [
+        {
+          "filename": "operacao_atlas.pdf",
+          "page": 1
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.8916034698486328
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.3123527765274048
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.413989782333374
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.4180665016174316
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.8916034698486328
+        }
+      ],
+      "retrieval_ms": 46.618
+    },
+    {
+      "question": "Por quantos dias os backups são retidos?",
+      "expected": [
+        {
+          "filename": "operacao_atlas.pdf",
+          "page": 2
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.5617460012435913
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.1463663578033447
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.2177810668945312
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.4872750043869019
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.5617460012435913
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.1463663578033447
+        }
+      ],
+      "retrieval_ms": 18.72
+    },
+    {
+      "question": "Qual é o objetivo de recuperação do Atlas em minutos?",
+      "expected": [
+        {
+          "filename": "operacao_atlas.pdf",
+          "page": 2
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.44211113452911377
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.8951560854911804
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.201853632926941
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.3548271656036377
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.44211113452911377
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.8951560854911804
+        }
+      ],
+      "retrieval_ms": 18.529
+    },
+    {
+      "question": "What is the maximum data-loss objective for Atlas?",
+      "expected": [
+        {
+          "filename": "operacao_atlas.pdf",
+          "page": 2
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.7800648212432861
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.2065277099609375
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.4284226894378662
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.4520407915115356
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.7800648212432861
+        }
+      ],
+      "retrieval_ms": 19.007
+    },
+    {
+      "question": "Em quais dias acontecem as visitas públicas ao observatório?",
+      "expected": [
+        {
+          "filename": "observatorio.pdf",
+          "page": 1
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 0.7111001014709473
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 0.7148017883300781
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.177424430847168
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.310206413269043
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 0.7111001014709473
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 0.7148017883300781
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.177424430847168
+        }
+      ],
+      "retrieval_ms": 50.52
+    },
+    {
+      "question": "Qual é a capacidade de uma sessão de visita?",
+      "expected": [
+        {
+          "filename": "observatorio.pdf",
+          "page": 1
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 0.875095009803772
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.1571617126464844
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.1730918884277344
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.3516860008239746
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 0.875095009803772
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.1571617126464844
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.1730918884277344
+        }
+      ],
+      "retrieval_ms": 21.279
+    },
+    {
+      "question": "Qual é a idade mínima para visitar o observatório?",
+      "expected": [
+        {
+          "filename": "observatorio.pdf",
+          "page": 1
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 0.7864112257957458
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.0620803833007812
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.3568034172058105
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.452392339706421
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 0.7864112257957458
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.0620803833007812
+        }
+      ],
+      "retrieval_ms": 27.964
+    },
+    {
+      "question": "Quanto tempo dura a oficina de astronomia?",
+      "expected": [
+        {
+          "filename": "observatorio.pdf",
+          "page": 2
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 0.6968400478363037
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.1133564710617065
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.1224169731140137
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.1314921379089355
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 0.6968400478363037
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.1133564710617065
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.1224169731140137
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.1314921379089355
+        }
+      ],
+      "retrieval_ms": 47.918
+    },
+    {
+      "question": "What language is the astronomy workshop presented in?",
+      "expected": [
+        {
+          "filename": "observatorio.pdf",
+          "page": 2
+        }
+      ],
+      "kind": "answerable",
+      "ranked": [
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.0076003074645996
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.4267876148223877
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.692501187324524
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.8315532207489014
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.0076003074645996
+        }
+      ],
+      "retrieval_ms": 19.357
+    },
+    {
+      "question": "Qual é a senha de produção do Atlas?",
+      "expected": [],
+      "kind": "unanswerable",
+      "ranked": [
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.9878706932067871
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.1041333675384521
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.239634394645691
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.5620596408843994
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 0.9878706932067871
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.1041333675384521
+        }
+      ],
+      "retrieval_ms": 18.346
+    },
+    {
+      "question": "Qual é o salário da direção do observatório?",
+      "expected": [],
+      "kind": "unanswerable",
+      "ranked": [
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.0474119186401367
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.2025346755981445
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.3261584043502808
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.4988278150558472
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.0474119186401367
+        }
+      ],
+      "retrieval_ms": 18.261
+    },
+    {
+      "question": "What is the reimbursement portal URL?",
+      "expected": [],
+      "kind": "unanswerable",
+      "ranked": [
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.1776888370513916
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.5777262449264526
+        },
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 1.6017417907714844
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.7488921880722046
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.1776888370513916
+        }
+      ],
+      "retrieval_ms": 45.877
+    },
+    {
+      "question": "Qual é o telefone do observatório?",
+      "expected": [],
+      "kind": "unanswerable",
+      "ranked": [
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.0410289764404297
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.3878411054611206
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.4505809545516968
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.5726051330566406
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.0410289764404297
+        }
+      ],
+      "retrieval_ms": 17.242
+    },
+    {
+      "question": "Qual é o limite?",
+      "expected": [],
+      "kind": "ambiguous",
+      "ranked": [
+        {
+          "text": "Política fictícia de reembolsos — Cooperativa Horizonte\nVigência: 1 de março de 2025. Esta política cobre viagens de trabalho previamente\naprovadas.\nAlimentação: limite de R$ 180 por pessoa por dia. Bebidas alcoólicas não são\nreembolsadas.\nHospedagem: limite de R$ 250 por diária, mediante nota fiscal.\nO deslocamento em ônibus pode ser reembolsado com comprovante da passagem.",
+          "page": 1,
+          "source": "reembolsos.pdf",
+          "distance": 1.4048206806182861
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.4820077419281006
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.5376032590866089
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.7045085430145264
+        }
+      ],
+      "accepted": [],
+      "retrieval_ms": 17.898
+    },
+    {
+      "question": "Qual é o prazo?",
+      "expected": [],
+      "kind": "ambiguous",
+      "ranked": [
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.0219340324401855
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.1086291074752808
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.1431442499160767
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.1495556831359863
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.0219340324401855
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.1086291074752808
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.1431442499160767
+        },
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.1495556831359863
+        }
+      ],
+      "retrieval_ms": 17.427
+    },
+    {
+      "question": "Quando acontece a atividade?",
+      "expected": [],
+      "kind": "ambiguous",
+      "ranked": [
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.1837456226348877
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.2378839254379272
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.446508526802063
+        },
+        {
+          "text": "Backup e recuperação — Serviço Atlas\nO backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.\nO objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de\n35 minutos.\nAntes de restaurar, a equipe valida o checksum e registra o incidente.\nEste documento não contém senhas nem credenciais de produção.",
+          "page": 2,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.5177353620529175
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.1837456226348877
+        }
+      ],
+      "retrieval_ms": 44.063
+    },
+    {
+      "question": "What is the schedule?",
+      "expected": [],
+      "kind": "ambiguous",
+      "ranked": [
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.0138165950775146
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.1351466178894043
+        },
+        {
+          "text": "Agenda fictícia — Observatório Serra Clara\nAs visitas públicas acontecem às sextas-feiras, das 19h às 22h, no horário de\nBrasília.\nA entrada é gratuita. São 24 vagas por sessão. A idade mínima é de 12 anos.\nA reserva deve ser feita com pelo menos 2 dias de antecedência.\nEm noites de chuva, a visita é substituída por uma apresentação no auditório.",
+          "page": 1,
+          "source": "observatorio.pdf",
+          "distance": 1.2018193006515503
+        },
+        {
+          "text": "Procedimento de solicitação — Cooperativa Horizonte\nEnvie a nota fiscal e a identificação da viagem pelo portal interno em até 10 dias\ncorridos após o retorno.\nA liderança da equipe aprova a solicitação. O financeiro paga em até 7 dias úteis\napós a aprovação.\nDespesas acima dos limites exigem autorização prévia por escrito.\nNão há reembolso automático para despesas sem comprovante.",
+          "page": 2,
+          "source": "reembolsos.pdf",
+          "distance": 1.3521325588226318
+        }
+      ],
+      "accepted": [
+        {
+          "text": "Runbook fictício — Serviço Atlas\nJanela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.\nO alerta de latência dispara após três verificações consecutivas acima de 2\nsegundos.\nA equipe Plataforma é responsável pelo primeiro atendimento.\nDurante a manutenção, o serviço mostra uma página de indisponibilidade programada.",
+          "page": 1,
+          "source": "operacao_atlas.pdf",
+          "distance": 1.0138165950775146
+        },
+        {
+          "text": "Oficina de astronomia — Observatório Serra Clara\nA oficina ocorre aos sábados às 15h, no horário de Brasília, e dura 90 minutos.\nO conteúdo é apresentado em português. A atividade inclui uma demonstração de\nmapas celestes.\nParticipantes recebem material impresso ao final da oficina.\nA oficina tem inscrição separada da visita noturna.",
+          "page": 2,
+          "source": "observatorio.pdf",
+          "distance": 1.1351466178894043
+        }
+      ],
+      "retrieval_ms": 16.962
+    }
+  ]
+}
