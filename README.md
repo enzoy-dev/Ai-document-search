@@ -2,6 +2,43 @@
 
 Semantic PDF search API built with FastAPI, Sentence Transformers, FAISS and Google Gemini. Upload PDFs, ask questions, and receive answers with document names and page references.
 
+## Document workspace
+
+Open **http://127.0.0.1:8000/ui** after starting the API. The responsive interface
+is served by the same application, using HTML, CSS and JavaScript with no separate
+frontend build or external assets.
+
+- Connect with your private API key, list/upload PDFs, and follow processing status.
+- Search for passages without calling Gemini, or request a generated answer when configured.
+- Inspect exact excerpts and page references, open the stored original PDF, and download it.
+- Distinguish an evidenced answer, missing information, and a request for clarification.
+
+The API key stays in the current tab's memory; it is not written to browser storage
+or included in PDF URLs. Refreshing the page requires reconnecting. Retrieved
+passages are search results, not automatic proof that a question can be answered.
+
+![Document workspace with real semantic retrieval](docs/images/workspace.png)
+
+## Try the read-only demonstration
+
+```bash
+docker compose -f compose.demo.yml up --build
+```
+
+Open **http://127.0.0.1:7860/ui**. No API/Gemini key or `.env` file is needed for
+this demo. It uses four fictional PDFs and the real multilingual embedding model
+at a pinned weight commit. The first search downloads the model; later searches
+reuse the cache. This requires initial network access and sufficient CPU/memory.
+
+The demo collection is isolated from private documents. Upload/delete/private API
+access is disabled in demo mode; search is limited to 20 requests/minute across
+the instance. Generated answers are disabled by default, so the demo makes no
+Gemini calls. Its normal search results should not be presented as generated answers.
+
+For publication, see [Hugging Face Spaces instructions](deployment/README.md).
+The repository includes a bundle preparer and Docker configuration;
+an actual public Space URL requires publication through the owner's account.
+
 ## Requirements
 
 - Python 3.12 (the tested runtime).
@@ -56,6 +93,10 @@ Documentation is at `/docs`, and OpenAPI at `/openapi.json`. Do not expose the s
 | `MAX_UPLOAD_SIZE_MB` | Positive upload size limit; default `15` |
 | `UPLOAD_DIR` | Temporary upload staging; default `uploads`, relative to the working directory |
 | `DATA_DIR` | Transactional SQLite database and revisioned FAISS cache; default `data`, relative to the working directory |
+| `DEMO_MODE` | Default `false`; when enabled, only the fixed public sample routes are usable |
+| `DEMO_ALLOW_GENERATION` | Default `false`; opt in to generated demo answers, with a server-side Gemini key |
+| `DEMO_REQUESTS_PER_MINUTE` | Shared demo request budget per instance; default `20` |
+| `DEMO_GENERATIONS_PER_DAY` | Shared daily demo generation-attempt budget; default `20`; UTC windows |
 
 Model loading happens only on the first embedding request. Use a writable persistent `HF_HOME` to reuse downloads. Required network destinations include Hugging Face and its model storage/CDN hosts, plus `generativelanguage.googleapis.com` for Gemini. A cached compatible model can be used without network access to Hugging Face.
 
@@ -66,11 +107,18 @@ For installation/model troubleshooting, retain TLS and download verification; do
 | Method | Route | Authentication |
 | --- | --- | --- |
 | GET | `/` | Public health/configuration summary |
+| GET | `/health` | Public health/configuration summary; browsers at `/` see the workspace |
+| GET | `/ui` | Public interface; private API operations still require the key |
 | POST | `/documents/upload` | `X-API-Key` |
 | GET | `/documents` | `X-API-Key` |
+| GET | `/documents/{filename}/pdf` | `X-API-Key`; PDF bytes from the same transactional store |
 | DELETE | `/documents/{filename}` | `X-API-Key` |
 | GET | `/retrieve?question=...` | `X-API-Key` (no Gemini call) |
 | GET | `/search?question=...` | `X-API-Key` |
+| GET | `/demo/documents` | Public, only when demo mode is enabled |
+| GET | `/demo/documents/{filename}/pdf` | Public fixed sample PDFs, demo mode only |
+| GET | `/demo/retrieve?question=...` | Public, rate limited, demo mode only |
+| GET | `/demo/search?question=...` | Public, rate/budget limited; requires explicit generation opt-in |
 
 Supply your configured key using the `X-API-Key` header. The health response reports whether keys are configured without returning their values; it does not contact Gemini or download a model, so it is not an end-to-end readiness test.
 
@@ -86,6 +134,14 @@ curl --fail-with-body --get http://127.0.0.1:8000/search \
 ```
 
 Answers include validated citation IDs such as `[S1]`, source filenames, page numbers, the exact retrieved text, normalized squared L2 distance and a relevance value calculated as `1 / (1 + distance)`. Both indexed and query vectors are explicitly normalized, so the distance is `2 - 2*cosine_similarity`. Only cited retrieved sources are returned with generated answers. Unknown or missing citation IDs cause a 503 instead of returning an unverifiable answer. This verifies source identifiers, not that every factual claim is supported; human review and answer-quality evaluation are still necessary. This relevance value is not a probability or a calibrated confidence score. The PDF contains fictional project information and has no personal data.
+
+Search responses now also include `status` (`answered`, `not_found`, or
+`needs_clarification`) and separate retrieval/generation timings in milliseconds.
+Gemini must return schema-validated JSON. A missing fact can produce `not_found`
+even when a related passage was retrieved; ambiguous questions can request
+clarification. Neither response claims cited evidence. No accepted passages means
+`not_found` without a Gemini call. These contracts are tested offline, but the
+model's actual abstention/clarification quality still needs live evaluation.
 
 Expected errors:
 
@@ -122,6 +178,22 @@ The embedding test downloads/loads the real model and checks a basic semantic ra
 ### GitHub Actions
 
 The **Offline tests** workflow runs the default suite for pushes and Pull Requests, with Hugging Face offline mode enabled and no API keys. It does not download the embedding model or call Gemini. Installation still downloads Python dependencies.
+
+The workflow also runs Chromium interaction tests with intercepted API responses.
+They cover connection/upload, example questions, excerpts, PDF opening, mobile
+layout, clarification, rate-limit recovery, and rendering untrusted text safely.
+Run them locally with:
+
+```bash
+python -m pip install -r requirements-browser.txt
+python -m playwright install chromium
+python -m pytest -q -m browser tests/test_browser.py
+```
+
+Browser checks are excluded from the default suite. Backend tests independently
+exercise real PDF extraction, SQLite and FAISS, including demo isolation and
+persistent/concurrent usage limits. A real-model browser smoke check is separate
+from these simulated-response tests.
 
 ## Storage upgrade and model identity
 
@@ -162,6 +234,19 @@ The [committed baseline reports](evaluations/baselines) use real models at recor
 
 The multilingual model retrieved more labeled evidence but rejected fewer unanswerable queries. These are small development-set results, not general accuracy claims or Gemini-answer scores. The default model is unchanged; validate on additional held-out PDFs before changing the model/threshold. Changing the model requires reindexing, not reusing the old vectors.
 
+A separate [24-question holdout](evaluations/holdout/README.md) adds a reimbursement
+policy, an operations runbook, a public schedule, absent facts and ambiguous
+questions. Both real-model reports are committed. The multilingual model accepts
+all 16 expected answer pages but also accepts passages for all four absent-fact
+questions. This reinforces why retrieval acceptance is not answer confidence.
+The private API default remains unchanged; the Portuguese-oriented public demo
+uses the multilingual model and labels retrieval results explicitly.
+
+The opt-in [answer evaluation](evaluations/README.md#answer-and-abstention-evaluation)
+measures response status, citation identifiers, expected-page hits and latency.
+It requires a configured Gemini key and explicit paid-generation opt-in. No live
+Gemini answer-quality score is claimed without that run and human review.
+
 ## Docker
 
 The Dockerfile uses Python 3.12 and CPU PyTorch, matching local setup:
@@ -185,6 +270,8 @@ Proxy settings can be forwarded with the standard `--build-arg HTTP_PROXY --buil
 ## Structure
 
 - `app/main.py`: API routes and authentication.
+- `app/static/`: responsive document workspace; assets served locally.
+- `app/demo.py`: fixed sample collection and transactional usage budgets.
 - `app/document_processor.py`: PDF extraction and page-aware chunking.
 - `app/embedding_service.py`: lazy model loading and embeddings.
 - `app/vector_store.py`: transactional SQLite source of truth and rebuildable FAISS cache.
@@ -194,3 +281,4 @@ Proxy settings can be forwarded with the standard `--build-arg HTTP_PROXY --buil
 - `app/llm.py`: lazy Gemini client and answer generation.
 - `tests/fixtures/sample.pdf`: reproducible, fictional two-page document.
 - `tests/test_live.py`: optional checks against real external services.
+- `deployment/`: Hugging Face Spaces Docker image, public README and bundle preparer.

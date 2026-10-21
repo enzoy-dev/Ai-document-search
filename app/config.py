@@ -30,10 +30,30 @@ MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", "15"))
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", "uploads"))
 DATA_DIR = Path(os.getenv("DATA_DIR", "data"))
 
+DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() in {"1", "true", "yes"}
+DEMO_ALLOW_GENERATION = os.getenv("DEMO_ALLOW_GENERATION", "false").lower() in {
+    "1",
+    "true",
+    "yes",
+}
+DEMO_REQUESTS_PER_MINUTE = int(os.getenv("DEMO_REQUESTS_PER_MINUTE", "20"))
+DEMO_GENERATIONS_PER_DAY = int(os.getenv("DEMO_GENERATIONS_PER_DAY", "20"))
+
 if CHUNK_SIZE <= 0 or not 0 <= CHUNK_OVERLAP < CHUNK_SIZE:
-    raise ValueError("CHUNK_SIZE must be positive and CHUNK_OVERLAP must be smaller than CHUNK_SIZE")
-if TOP_K <= 0 or MAX_UPLOAD_SIZE_MB <= 0 or not isfinite(SIMILARITY_THRESHOLD) or SIMILARITY_THRESHOLD < 0:
-    raise ValueError("TOP_K and MAX_UPLOAD_SIZE_MB must be positive; SIMILARITY_THRESHOLD must be finite and nonnegative")
+    raise ValueError(
+        "CHUNK_SIZE must be positive and CHUNK_OVERLAP must be smaller than CHUNK_SIZE"
+    )
+if (
+    TOP_K <= 0
+    or MAX_UPLOAD_SIZE_MB <= 0
+    or not isfinite(SIMILARITY_THRESHOLD)
+    or SIMILARITY_THRESHOLD < 0
+):
+    raise ValueError(
+        "TOP_K and MAX_UPLOAD_SIZE_MB must be positive; SIMILARITY_THRESHOLD must be finite and nonnegative"
+    )
+if DEMO_REQUESTS_PER_MINUTE <= 0 or DEMO_GENERATIONS_PER_DAY <= 0:
+    raise ValueError("Demo limits must be positive")
 
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 DATA_DIR.mkdir(parents=True, exist_ok=True)

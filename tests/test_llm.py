@@ -8,13 +8,14 @@ from app.errors import ServiceUnavailableError
 
 
 def test_answer_uses_context_and_configured_model(monkeypatch):
-    generate = Mock(return_value=SimpleNamespace(text='  Solar energy.  '))
+    generate = Mock(return_value=SimpleNamespace(text='{"status":"answered","answer":"Solar energy. [S1]","language":"en"}'))
     monkeypatch.setattr(llm, 'get_client', lambda: SimpleNamespace(models=SimpleNamespace(generate_content=generate)))
-    assert llm.generate_answer('What energy?', 'Solar panels generate electricity.') == 'Solar energy.'
+    assert llm.generate_answer('What energy?', 'Solar panels generate electricity.') == 'Solar energy. [S1]'
     params = generate.call_args.kwargs
     assert params['model'] == llm.GEMINI_MODEL
     assert 'What energy?' in params['contents']
     assert 'Solar panels generate electricity.' in params['contents']
+    assert params['config']['response_mime_type'] == 'application/json'
 
 
 def test_missing_key_is_lazy_and_explicit(monkeypatch):
@@ -46,3 +47,11 @@ def test_client_is_cached(monkeypatch):
     monkeypatch.setattr(llm, '_client', None)
     assert llm.get_client() is llm.get_client()
     assert constructor.call_count == 1
+
+
+@pytest.mark.parametrize('text', ['not JSON', '{"status":"invented","answer":"x"}', '{"status":"answered","answer":"   "}'])
+def test_invalid_structured_answers_are_rejected(monkeypatch, text):
+    generate = Mock(return_value=SimpleNamespace(text=text))
+    monkeypatch.setattr(llm, 'get_client', lambda: SimpleNamespace(models=SimpleNamespace(generate_content=generate)))
+    with pytest.raises(ServiceUnavailableError, match='invalid structured answer'):
+        llm.generate_answer_draft('Question', 'Context')

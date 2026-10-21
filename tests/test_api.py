@@ -4,6 +4,7 @@ import pytest
 from pypdf import PdfWriter
 
 from app.errors import ServiceUnavailableError
+from app.llm import AnswerDraft
 
 HEADERS = {'X-API-Key': 'unit-test-api-key'}
 
@@ -43,7 +44,7 @@ def test_upload_search_persist_and_delete(api, monkeypatch, sample_pdf, fake_emb
     from app.vector_store import VectorStore
     client, main = api
     monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
-    answer = Mock(return_value='The project researches renewable energy. [S1] [S2]')
+    answer = Mock(return_value=AnswerDraft(status='answered', answer='The project researches renewable energy. [S1] [S2]'))
     monkeypatch.setattr(main, 'generate_answer', answer)
     assert upload(client, sample_pdf).status_code == 200
     assert client.get('/documents', headers=HEADERS).json()['documents'] == [{'filename': 'sample.pdf', 'chunks': 2}]
@@ -142,7 +143,7 @@ def test_unverifiable_answer_is_not_returned(api, monkeypatch, sample_pdf, fake_
     client, main = api
     monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
     assert upload(client, sample_pdf).status_code == 200
-    monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: answer)
+    monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: AnswerDraft(status='answered', answer=answer))
     result = client.get('/search', headers=HEADERS, params={'question': 'Aurora?'})
     assert result.status_code == 503 and 'citations' in result.json()['detail']
 
@@ -151,7 +152,7 @@ def test_sources_only_include_cited_evidence(api, monkeypatch, sample_pdf, fake_
     client, main = api
     monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
     assert upload(client, sample_pdf).status_code == 200
-    monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: 'Renewable energy. [S1]')
+    monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: AnswerDraft(status='answered', answer='Renewable energy. [S1]'))
     result = client.get('/search', headers=HEADERS, params={'question': 'Aurora?'})
     assert result.status_code == 200
     assert len(result.json()['sources']) == 1
@@ -212,6 +213,6 @@ def test_model_refusal_does_not_claim_sources(api, monkeypatch, sample_pdf, fake
     client, main = api
     monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
     assert upload(client, sample_pdf).status_code == 200
-    monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: NO_ANSWER)
+    monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: AnswerDraft(status='not_found', answer=NO_ANSWER))
     result = client.get('/search', headers=HEADERS, params={'question': 'Unknown fact?'})
     assert result.status_code == 200 and result.json()['sources'] == []

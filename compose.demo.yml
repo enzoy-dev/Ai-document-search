@@ -1,0 +1,15 @@
+services:
+  demo:
+    build:
+      context: .
+      dockerfile: deployment/huggingface/Dockerfile
+    ports:
+      - "127.0.0.1:7860:7860"
+    volumes:
+      - demo_data:/home/user/app/runtime
+      - demo_model_cache:/home/user/.cache/huggingface
+    restart: unless-stopped
+
+volumes:
+  demo_data:
+  demo_model_cache:

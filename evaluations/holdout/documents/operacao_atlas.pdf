@@ -1,0 +1,106 @@
+%PDF-1.3
+%âãÏÓ
+1 0 obj
+<<
+/Producer (pypdf)
+/Title (operacao\137atlas)
+/Author (AI Document Search \204 fictional evaluation fixture)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 2
+/Kids [ 5 0 R 7 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+>>
+endobj
+5 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 4 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 612 792 ]
+/Parent 2 0 R
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 404
+>>
+stream
+BT /F1 11 Tf 45 745 Td 17 TL
+(Runbook fictício — Serviço Atlas) Tj T*
+(Janela de manutenção: quintas-feiras, das 02h00 às 02h20 UTC.) Tj T*
+(O alerta de latência dispara após três verificações consecutivas acima de 2) Tj T*
+(segundos.) Tj T*
+(A equipe Plataforma é responsável pelo primeiro atendimento.) Tj T*
+(Durante a manutenção, o serviço mostra uma página de indisponibilidade programada.) Tj T*
+ET
+endstream
+endobj
+7 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 4 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 612 792 ]
+/Parent 2 0 R
+/Contents 8 0 R
+>>
+endobj
+8 0 obj
+<<
+/Length 424
+>>
+stream
+BT /F1 11 Tf 45 745 Td 17 TL
+(Backup e recuperação — Serviço Atlas) Tj T*
+(O backup completo é executado diariamente às 03h00 UTC. A retenção é de 14 dias.) Tj T*
+(O objetivo de perda máxima de dados é de 24 horas. O objetivo de recuperação é de) Tj T*
+(35 minutos.) Tj T*
+(Antes de restaurar, a equipe valida o checksum e registra o incidente.) Tj T*
+(Este documento não contém senhas nem credenciais de produção.) Tj T*
+ET
+endstream
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000015 00000 n 
+0000000144 00000 n 
+0000000209 00000 n 
+0000000258 00000 n 
+0000000355 00000 n 
+0000000487 00000 n 
+0000000942 00000 n 
+0000001074 00000 n 
+trailer
+<<
+/Size 9
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+1549
+%%EOF
