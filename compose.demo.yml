@@ -7,8 +7,8 @@ services:
       - "127.0.0.1:7860:7860"
     environment:
       DEMO_ALLOW_GENERATION: "true"
-      GEMINI_API_KEY: "${GEMINI_API_KEY}"
-      GEMINI_MODEL: "${GEMINI_MODEL}"
+      GEMINI_API_KEY: "${GEMINI_API_KEY:-}"
+      GEMINI_MODEL: "${GEMINI_MODEL:-gemini-3.5-flash-lite}"
     volumes:
       - demo_data:/home/user/app/runtime
       - demo_model_cache:/home/user/.cache/huggingface

@@ -32,8 +32,10 @@ reuse the cache. This requires initial network access and sufficient CPU/memory.
 
 The demo collection is isolated from private documents. Upload/delete/private API
 access is disabled in demo mode; search is limited to 20 requests/minute across
-the instance. Generated answers are disabled by default, so the demo makes no
-Gemini calls. Its normal search results should not be presented as generated answers.
+the instance. The local Compose configuration allows generation when a Gemini
+key is supplied in `.env`; without one, only retrieval is available. Choose
+**Buscar trechos** for a query without a Gemini call. The public Space image keeps
+generation disabled unless explicitly enabled by its owner.
 
 For publication, see [Hugging Face Spaces instructions](deployment/README.md).
 The repository includes a bundle preparer and Docker configuration;
@@ -246,6 +248,11 @@ The opt-in [answer evaluation](evaluations/README.md#answer-and-abstention-evalu
 measures response status, citation identifiers, expected-page hits and latency.
 It requires a configured Gemini key and explicit paid-generation opt-in. No live
 Gemini answer-quality score is claimed without that run and human review.
+
+Enzo's [documented local smoke test](evaluations/manual/2026-10-21-local-gemini.md)
+records a correct generated answer, an appropriate refusal for an absent fact,
+and a vague query rejected before Gemini. These user-reported observations do
+not substitute for a full generation benchmark or validate ambiguity handling.
 
 ## Docker
 
