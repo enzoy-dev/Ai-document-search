@@ -1,5 +1,9 @@
 # Retrieval benchmark
 
+For the user-reported local Gemini smoke test, see the
+[manual session record](manual/2026-10-21-local-gemini.md). It is kept separate from
+the automated reports and includes the failed clarification case.
+
 Four fictional Portuguese PDFs, eight pages (including related distractor passages), and 20 bilingual questions: 16 with labeled evidence and four intentionally unanswerable. Run from the repository root:
 
 ```bash

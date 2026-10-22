@@ -3,7 +3,8 @@
 The public demo uses a separate fixed collection of fictional PDFs. It allows no
 uploads, deletions, or access to the private collection. Semantic retrieval uses the
 multilingual MiniLM model at commit `e8f8c211226b894fcb81acc59f3b34ba3efd5f42`.
-Gemini generation is off by default.
+Gemini generation is off by default in the Space image. The local Compose file
+allows it when a key is supplied; these are separate configurations.
 
 ## Test locally
 
@@ -51,6 +52,31 @@ tests and benchmark reports. It refuses to overwrite a nonempty destination.
    `/documents` returns `403`. `/health` should report `demo_mode: true`.
 4. Put the real Space URL in the repository/profile README after that check.
    Preparing a bundle does not create or publish a Space.
+
+### Windows / VS Code handoff
+
+Open the repository folder in VS Code, then its terminal. If Python 3.12 is
+installed locally, preparing the bundle needs only its standard library:
+
+```powershell
+python -m deployment.prepare_space --output "$env:TEMP\ai-document-search-space"
+```
+
+Use a new empty folder if that destination already contains a previous bundle.
+If you have only installed dependencies inside Docker, the `hf` command may not
+exist on Windows. Either upload the bundle through the Space's **Files** page
+(preserving subfolders), or install the CLI locally:
+
+```powershell
+python -m pip install huggingface_hub
+hf auth login
+hf upload SEU_USUARIO/ai-document-search "$env:TEMP\ai-document-search-space" . --repo-type space
+```
+
+The existing `.env` is not part of the bundle. To enable answers in the Space,
+configure its own secret/variables as described below. After publication, check
+the app and copy its actual URL into the repository/profile. No public URL is
+claimed until those steps have been completed.
 
 ## Optional generated answers
 
