@@ -150,8 +150,12 @@ function renderResults(data, mode) {
     ? sources.length
       ? "Trechos encontrados"
       : "Nenhum trecho próximo encontrado"
-    : titles[data.status];
-  el("result-kind").textContent = retrieve
+    : data.status === "not_found" && data.decision_stage === "retrieval"
+      ? "Nenhum trecho aceito pela busca"
+      : data.status === "not_found" && data.decision_stage === "generation"
+        ? "Resposta não encontrada no contexto recuperado"
+        : titles[data.status];
+  el("result-kind").textContent = retrieve || data.generation_attempted === false
     ? "Busca sem geração"
     : "Resposta gerada";
   el("answer").textContent = retrieve
@@ -253,7 +257,7 @@ el("question-form").addEventListener("submit", async (event) => {
   clearPdf();
   try {
     const prefix = settings.demo_mode ? "/demo" : "";
-    const query = new URLSearchParams({ question });
+    const query = new URLSearchParams({ question, retrieval_mode: el("retrieval-mode").value });
     const data = await (await request(`${prefix}/${mode}?${query}`)).json();
     renderResults(data, mode);
   } catch (error) {

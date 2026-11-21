@@ -9,20 +9,38 @@ NO_ANSWER = "Não encontrei essa informação nos documentos indexados."
 NO_ANSWER_EN = "I couldn't find that information in the indexed documents."
 
 
+def accepts_result(result, threshold):
+    distance = result.get("distance")
+    return (distance is not None and distance <= threshold) or (
+        result.get("retrieval_mode") == "hybrid" and result.get("lexical_score", 0) > 0
+    )
+
+
 def evidence_from_results(results, threshold):
-    return [
-        {
-            "citation_id": f"S{number}",
+    sources = []
+    for result in results:
+        if not accepts_result(result, threshold):
+            continue
+        distance = result.get("distance")
+        row = {
+            "citation_id": f"S{len(sources) + 1}",
             "filename": result["source"],
             "page": result.get("page"),
             "text": result["text"],
-            "distance": round(result["distance"], 4),
-            "relevance": round(1 / (1 + result["distance"]), 3),
+            "distance": round(distance, 4) if distance is not None else None,
+            "relevance": round(1 / (1 + distance), 3) if distance is not None else None,
         }
-        for number, result in enumerate(
-            (r for r in results if r["distance"] <= threshold), 1
-        )
-    ]
+        if result.get("retrieval_mode") == "hybrid":
+            row.update(
+                retrieval_mode="hybrid",
+                lexical_score=result.get("lexical_score", 0),
+                fusion_score=result["fusion_score"],
+                acceptance_reason="semantic_distance"
+                if distance is not None and distance <= threshold
+                else "lexical_match",
+            )
+        sources.append(row)
+    return sources
 
 
 def make_context(sources):

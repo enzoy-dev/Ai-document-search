@@ -165,6 +165,25 @@ class VectorStore:
         return [{**snapshot.chunks[int(idx)], 'distance': max(0.0, float(distance))}
                 for idx, distance in zip(indices[0], distances[0])]
 
+    def search_hybrid(self, query_embedding, question, k=4, encoder_identity=None):
+        from app.hybrid import lexical_rank, fuse
+        if type(k) is not int or k <= 0:
+            raise ValueError("k must be positive")
+        vector = self._vectors([query_embedding])
+        snapshot = self.snapshot(encoder_identity)
+        if not snapshot.chunks:
+            return []
+        pool = min(max(20, k * 5), len(snapshot.chunks))
+        distances, indices = snapshot.index.search(vector, pool)
+        semantic = [{**snapshot.chunks[int(i)], 'chunk_id': int(i), 'distance': max(0., float(d))}
+                    for i, d in zip(indices[0], distances[0])]
+        lexical = lexical_rank(question, snapshot.chunks, pool)
+        # Distances remain semantic distances, including lexical-only candidates.
+        for row in lexical:
+            stored = snapshot.index.reconstruct(row['chunk_id'])
+            row['distance'] = max(0., float(((stored - vector[0]) ** 2).sum()))
+        return fuse(semantic, lexical, k)
+
     def list_documents(self):
         with self._connection() as connection:
             return [{'filename': name, 'chunks': count} for name, count in connection.execute('''

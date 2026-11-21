@@ -18,6 +18,7 @@ from secrets import compare_digest
 from urllib.parse import quote
 from time import perf_counter
 import threading
+from typing import Literal
 from pypdf.errors import PdfReadError
 from app.errors import ServiceUnavailableError
 import os
@@ -57,7 +58,7 @@ from app.demo import (
 app = FastAPI(
     title="AI Document Search",
     description="Semantic document search API with RAG",
-    version="1.3.0",
+    version="1.4.0",
 )
 
 vector_store = VectorStore()
@@ -275,7 +276,7 @@ def delete_document(filename: str):
     }
 
 
-def retrieve(question, store=None):
+def retrieve(question, store=None, retrieval_mode="semantic"):
     store = vector_store if store is None else store
     if not question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
@@ -283,31 +284,53 @@ def retrieve(question, store=None):
         raise HTTPException(
             status_code=400, detail="No documents have been indexed yet."
         )
+    if retrieval_mode not in {"semantic", "hybrid"}:
+        raise ValueError("Unknown retrieval mode")
     query_embedding = generate_embeddings([question])[0]
-    return evidence_from_results(
-        store.search(query_embedding, k=TOP_K, encoder_identity=get_model_identity()),
-        SIMILARITY_THRESHOLD,
+    results = (
+        store.search_hybrid(
+            query_embedding, question, k=TOP_K, encoder_identity=get_model_identity()
+        )
+        if retrieval_mode == "hybrid"
+        else store.search(
+            query_embedding, k=TOP_K, encoder_identity=get_model_identity()
+        )
     )
+    return evidence_from_results(results, SIMILARITY_THRESHOLD)
 
 
 @app.get("/retrieve", dependencies=[Depends(verify_api_key)])
-def retrieve_documents(question: str = Query(..., min_length=1, max_length=2000)):
-    return {"question": question, "sources": retrieve(question)}
+def retrieve_documents(
+    question: str = Query(..., min_length=1, max_length=2000),
+    retrieval_mode: Literal["semantic", "hybrid"] = "semantic",
+):
+    return {
+        "question": question,
+        "sources": retrieve(question, retrieval_mode=retrieval_mode),
+        "retrieval_mode": retrieval_mode,
+    }
 
 
 @app.get("/search", dependencies=[Depends(verify_api_key)])
-def search_documents(question: str = Query(..., min_length=1, max_length=2000)):
-    return answer_question(question)
+def search_documents(
+    question: str = Query(..., min_length=1, max_length=2000),
+    retrieval_mode: Literal["semantic", "hybrid"] = "semantic",
+):
+    return answer_question(question, retrieval_mode=retrieval_mode)
 
 
-def answer_question(question, store=None):
+def answer_question(question, store=None, retrieval_mode="semantic"):
     started = perf_counter()
-    sources = retrieve(question, store)
+    sources = retrieve(question, store, retrieval_mode=retrieval_mode)
     retrieved = perf_counter()
     if not sources:
         return {
             "question": question,
             "status": "not_found",
+            "decision_stage": "retrieval",
+            "decision_reason": "no_accepted_passages",
+            "generation_attempted": False,
+            "retrieval_mode": retrieval_mode,
             "answer": NO_ANSWER,
             "sources": [],
             "timings_ms": {
@@ -333,6 +356,14 @@ def answer_question(question, store=None):
     return {
         "question": question,
         "status": draft.status,
+        "decision_stage": "generation",
+        "decision_reason": {
+            "answered": "cited_response",
+            "not_found": "model_abstained",
+            "needs_clarification": "model_requested_clarification",
+        }[draft.status],
+        "generation_attempted": True,
+        "retrieval_mode": retrieval_mode,
         "answer": answer,
         "sources": selected,
         "timings_ms": {
@@ -369,15 +400,25 @@ def demo_pdf(filename: str):
 
 
 @app.get("/demo/retrieve", dependencies=[Depends(require_demo)])
-def demo_retrieve(question: str = Query(..., min_length=1, max_length=2000)):
+def demo_retrieve(
+    question: str = Query(..., min_length=1, max_length=2000),
+    retrieval_mode: Literal["semantic", "hybrid"] = "semantic",
+):
     if not question.strip():
         raise HTTPException(400, "Question cannot be empty.")
     demo_budget.reserve()
-    return {"question": question, "sources": retrieve(question, demo_collection())}
+    return {
+        "question": question,
+        "sources": retrieve(question, demo_collection(), retrieval_mode=retrieval_mode),
+        "retrieval_mode": retrieval_mode,
+    }
 
 
 @app.get("/demo/search", dependencies=[Depends(require_demo)])
-def demo_search(question: str = Query(..., min_length=1, max_length=2000)):
+def demo_search(
+    question: str = Query(..., min_length=1, max_length=2000),
+    retrieval_mode: Literal["semantic", "hybrid"] = "semantic",
+):
     if not question.strip():
         raise HTTPException(400, "Question cannot be empty.")
     if not DEMO_ALLOW_GENERATION or not GEMINI_API_KEY:
@@ -386,4 +427,4 @@ def demo_search(question: str = Query(..., min_length=1, max_length=2000)):
             "Respostas geradas estão desativadas nesta demonstração. Use a busca de trechos.",
         )
     demo_budget.reserve(generation=True)
-    return answer_question(question, demo_collection())
+    return answer_question(question, demo_collection(), retrieval_mode=retrieval_mode)

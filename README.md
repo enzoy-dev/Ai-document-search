@@ -41,6 +41,23 @@ For publication, see [Hugging Face Spaces instructions](deployment/README.md).
 The repository includes a bundle preparer and Docker configuration;
 an actual public Space URL requires publication through the owner's account.
 
+## Retrieval quality and experimental hybrid search
+
+The API and workspace now let you choose `retrieval_mode=semantic` (unchanged
+default) or `hybrid` (BM25 + reciprocal-rank fusion). Hybrid can match exact terms
+outside the semantic distance threshold; it can also accept more irrelevant
+context. Its ranks are not confidence scores. No default-model change is implied.
+
+Generated-response diagnostics distinguish no accepted passages, model abstention
+and clarification after context. System instructions are separated from untrusted
+PDF/question data; this does not establish prompt-injection resistance.
+
+[Method, API fields, adversarial cases and factual review](docs/retrieval-quality.md) ·
+[Archived-ranking comparison, including regressions](evaluations/comparisons/README.md).
+The comparison is a verified replay of existing real-model rankings, not a new
+live-model/Gemini benchmark. Factual review starts pending and is bound to an
+exact answer report hash.
+
 ## Requirements
 
 - Python 3.12 (the tested runtime).

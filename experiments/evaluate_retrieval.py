@@ -12,6 +12,7 @@ from app.config import EMBEDDING_MODEL, EMBEDDING_REVISION, SIMILARITY_THRESHOLD
 from app.document_processor import process_document
 from app.embedding_service import generate_embeddings, get_model_identity
 from app.vector_store import VectorStore
+from app.retrieval import accepts_result
 
 
 def score_cases(cases, ranked, threshold, top_k):
@@ -34,7 +35,7 @@ def score_cases(cases, ranked, threshold, top_k):
         accepted = {
             (item["source"], item["page"])
             for item in selected
-            if item["distance"] <= threshold
+            if accepts_result(item, threshold)
         }
         kind = case.get("kind", "answerable" if expected else "unanswerable")
         if expected:
@@ -64,7 +65,7 @@ def score_cases(cases, ranked, threshold, top_k):
                 "expected": case["expected"],
                 "kind": kind,
                 "ranked": selected,
-                "accepted": [r for r in selected if r["distance"] <= threshold],
+                "accepted": [r for r in selected if accepts_result(r, threshold)],
             }
         )
     mean = lambda values: sum(values) / len(values) if values else None
@@ -84,7 +85,11 @@ def score_cases(cases, ranked, threshold, top_k):
     }
 
 
-def evaluate(dataset_path, threshold=SIMILARITY_THRESHOLD, top_k=TOP_K):
+def evaluate(
+    dataset_path, threshold=SIMILARITY_THRESHOLD, top_k=TOP_K, retrieval_mode="semantic"
+):
+    if retrieval_mode not in {"semantic", "hybrid"}:
+        raise ValueError("Unknown retrieval mode")
     dataset_path = Path(dataset_path)
     data = json.loads(dataset_path.read_text())
     digest = hashlib.sha256(dataset_path.read_bytes())
@@ -120,11 +125,17 @@ def evaluate(dataset_path, threshold=SIMILARITY_THRESHOLD, top_k=TOP_K):
         ranked, latencies = [], []
         for case in data["cases"]:
             started = perf_counter()
+            embedding = generate_embeddings([case["question"]])[0]
             ranked.append(
-                store.search(
-                    generate_embeddings([case["question"]])[0],
+                store.search_hybrid(
+                    embedding,
+                    case["question"],
                     k=top_k,
                     encoder_identity=get_model_identity(),
+                )
+                if retrieval_mode == "hybrid"
+                else store.search(
+                    embedding, k=top_k, encoder_identity=get_model_identity()
                 )
             )
             latencies.append((perf_counter() - started) * 1000)
@@ -138,6 +149,10 @@ def evaluate(dataset_path, threshold=SIMILARITY_THRESHOLD, top_k=TOP_K):
         "resolved_model_identity": get_model_identity(),
         "dimension": len(vectors[0]),
         "metric": "normalized_squared_l2",
+        "retrieval_mode": retrieval_mode,
+        "acceptance_policy": "semantic_distance_or_lexical_match"
+        if retrieval_mode == "hybrid"
+        else "semantic_distance",
         "threshold": threshold,
         "top_k": top_k,
         "mean_retrieval_ms": round(sum(latencies) / len(latencies), 3),
@@ -155,10 +170,13 @@ def main():
     parser.add_argument("--threshold", type=float, default=SIMILARITY_THRESHOLD)
     parser.add_argument("--top-k", type=int, default=TOP_K)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--retrieval-mode", choices=["semantic", "hybrid"], default="semantic"
+    )
     args = parser.parse_args()
     if args.top_k <= 0 or not math.isfinite(args.threshold) or args.threshold < 0:
         parser.error("--top-k must be positive and --threshold finite and nonnegative")
-    report = evaluate(args.dataset, args.threshold, args.top_k)
+    report = evaluate(args.dataset, args.threshold, args.top_k, args.retrieval_mode)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2))
     print(

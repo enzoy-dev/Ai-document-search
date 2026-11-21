@@ -91,6 +91,8 @@ def browser_page(sample_pdf):
                 else:
                     route.fulfill(
                         json={
+                            "decision_stage": state.get("decision_stage"),
+                            "generation_attempted": state.get("generation_attempted"),
                             "question": "Aurora?",
                             "status": state["status"],
                             "answer": "Campinas. [S1]"
@@ -188,3 +190,42 @@ def test_rate_limit_message_and_recovery(browser_page):
     ask(page)
     playwright.expect(page.locator("#results")).to_be_visible()
     playwright.expect(page.get_by_role("alert")).to_be_hidden()
+
+
+def test_hybrid_selector_sends_mode_to_backend(browser_page):
+    from urllib.parse import parse_qs
+
+    page, state = browser_page
+    page.goto("http://workspace.test/ui")
+    page.get_by_label("Método de busca").select_option("hybrid")
+    with page.expect_request(
+        lambda request: "/demo/retrieve?" in request.url
+    ) as pending:
+        ask(page)
+    assert parse_qs(urlsplit(pending.value.url).query)["retrieval_mode"] == ["hybrid"]
+    playwright.expect(page.locator("#results")).to_be_visible()
+    page.set_viewport_size({"width": 390, "height": 844})
+    assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+
+
+@pytest.mark.parametrize(
+    "stage,attempted,title",
+    [
+        ("retrieval", False, "Nenhum trecho aceito pela busca"),
+        ("generation", True, "Resposta não encontrada no contexto recuperado"),
+    ],
+)
+def test_missing_evidence_and_model_abstention_have_different_titles(
+    browser_page, stage, attempted, title
+):
+    page, state = browser_page
+    state.update(
+        status="not_found", decision_stage=stage, generation_attempted=attempted
+    )
+    page.goto("http://workspace.test/ui")
+    page.locator("#generation-mode").check()
+    ask(page)
+    playwright.expect(page.locator("#result-title")).to_have_text(title)
+    playwright.expect(page.locator("#result-kind")).to_have_text(
+        "Resposta gerada" if attempted else "Busca sem geração"
+    )
