@@ -133,13 +133,13 @@ For installation/model troubleshooting, retain TLS and download verification; do
 | GET | `/documents/{filename}/pdf` | `X-API-Key`; PDF bytes from the same transactional store |
 | DELETE | `/documents/{filename}` | `X-API-Key` |
 | GET | `/retrieve?question=...` | `X-API-Key` (no Gemini call) |
-| GET | `/search?question=...` | `X-API-Key` |
+| POST | `/search` | `X-API-Key`; JSON body with `question` and optional `retrieval_mode` |
 | GET | `/demo/documents` | Public, only when demo mode is enabled |
 | GET | `/demo/documents/{filename}/pdf` | Public fixed sample PDFs, demo mode only |
 | GET | `/demo/retrieve?question=...` | Public, rate limited, demo mode only |
-| GET | `/demo/search?question=...` | Public, rate/budget limited; requires explicit generation opt-in |
+| POST | `/demo/search` | Public, rate/budget limited; JSON body; requires explicit generation opt-in |
 
-Supply your configured key using the `X-API-Key` header. The health response reports whether keys are configured without returning their values; it does not contact Gemini or download a model, so it is not an end-to-end readiness test.
+Supply your configured key using the `X-API-Key` header. The health response reads document/chunk counts directly from SQLite without loading or rebuilding the FAISS search snapshot. It reports whether keys are configured without returning their values; it does not contact Gemini or download a model, so it is not an end-to-end readiness test. Generated-answer endpoints use POST so question text is sent in a JSON body rather than a URL; retrieval-only endpoints remain GET.
 
 Upload the included demonstration PDF (with `API_KEY` exported in your terminal):
 
@@ -147,9 +147,10 @@ Upload the included demonstration PDF (with `API_KEY` exported in your terminal)
 curl --fail-with-body -X POST http://127.0.0.1:8000/documents/upload \
   -H "X-API-Key: $API_KEY" \
   -F 'file=@tests/fixtures/sample.pdf;type=application/pdf'
-curl --fail-with-body --get http://127.0.0.1:8000/search \
+curl --fail-with-body -X POST http://127.0.0.1:8000/search \
   -H "X-API-Key: $API_KEY" \
-  --data-urlencode 'question=What does Project Aurora research?'
+  -H "Content-Type: application/json" \
+  -d '{"question":"What does Project Aurora research?","retrieval_mode":"semantic"}'
 ```
 
 Answers include validated citation IDs such as `[S1]`, source filenames, page numbers, the exact retrieved text, normalized squared L2 distance and a relevance value calculated as `1 / (1 + distance)`. Both indexed and query vectors are explicitly normalized, so the distance is `2 - 2*cosine_similarity`. Only cited retrieved sources are returned with generated answers. Unknown or missing citation IDs cause a 503 instead of returning an unverifiable answer. This verifies source identifiers, not that every factual claim is supported; human review and answer-quality evaluation are still necessary. This relevance value is not a probability or a calibrated confidence score. The PDF contains fictional project information and has no personal data.
