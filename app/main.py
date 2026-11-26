@@ -10,6 +10,7 @@ from fastapi import (
 )
 from fastapi.responses import JSONResponse, FileResponse, Response
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
 from pathlib import Path
 import tempfile
@@ -54,6 +55,11 @@ from app.demo import (
     EXAMPLE_NAMES,
     EXAMPLE_QUESTIONS,
 )
+
+class SearchRequest(BaseModel):
+    question: str = Field(..., min_length=1, max_length=2000)
+    retrieval_mode: Literal["semantic", "hybrid"] = "semantic"
+
 
 app = FastAPI(
     title="AI Document Search",
@@ -313,12 +319,13 @@ def retrieve_documents(
     }
 
 
-@app.get("/search", dependencies=[Depends(verify_api_key)])
-def search_documents(
-    question: str = Query(..., min_length=1, max_length=2000),
-    retrieval_mode: Literal["semantic", "hybrid"] = "semantic",
-):
-    return answer_question(question, retrieval_mode=retrieval_mode)
+@app.post("/search", dependencies=[Depends(verify_api_key)])
+def search_documents(payload: SearchRequest):
+    if not payload.question.strip():
+        raise HTTPException(status_code=400, detail="Question cannot be empty.")
+    return answer_question(
+        payload.question, retrieval_mode=payload.retrieval_mode
+    )
 
 
 def answer_question(question, store=None, retrieval_mode="semantic"):
@@ -416,12 +423,9 @@ def demo_retrieve(
     }
 
 
-@app.get("/demo/search", dependencies=[Depends(require_demo)])
-def demo_search(
-    question: str = Query(..., min_length=1, max_length=2000),
-    retrieval_mode: Literal["semantic", "hybrid"] = "semantic",
-):
-    if not question.strip():
+@app.post("/demo/search", dependencies=[Depends(require_demo)])
+def demo_search(payload: SearchRequest):
+    if not payload.question.strip():
         raise HTTPException(400, "Question cannot be empty.")
     if not DEMO_ALLOW_GENERATION or not GEMINI_API_KEY:
         raise HTTPException(
@@ -429,4 +433,6 @@ def demo_search(
             "Respostas geradas estão desativadas nesta demonstração. Use a busca de trechos.",
         )
     demo_budget.reserve(generation=True)
-    return answer_question(question, demo_collection(), retrieval_mode=retrieval_mode)
+    return answer_question(
+        payload.question, demo_collection(), retrieval_mode=payload.retrieval_mode
+    )

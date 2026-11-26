@@ -57,7 +57,7 @@ def test_upload_search_persist_and_delete(api, monkeypatch, sample_pdf, fake_emb
     assert client.get('/documents', headers=HEADERS).json()['documents'] == [{'filename': 'sample.pdf', 'chunks': 2}]
     assert VectorStore().index.ntotal == 2  # Reload actual FAISS persistence.
     assert upload(client, sample_pdf).status_code == 409
-    result = client.get('/search', headers=HEADERS, params={'question': 'What does Aurora research?'})
+    result = client.post('/search', headers=HEADERS, json={'question': 'What does Aurora research?'})
     assert result.status_code == 200
     assert 'renewable energy' in result.json()['answer']
     assert {s['page'] for s in result.json()['sources']} == {1, 2}
@@ -71,8 +71,10 @@ def test_upload_search_persist_and_delete(api, monkeypatch, sample_pdf, fake_emb
 
 def test_empty_search(api):
     client, _ = api
-    assert client.get('/search', headers=HEADERS, params={'question': ' '}).status_code == 400
-    assert client.get('/search', headers=HEADERS, params={'question': 'Question'}).status_code == 400
+    assert client.post('/search', headers=HEADERS, json={'question': ' '}).status_code == 400
+    assert client.post('/search', headers=HEADERS, json={'question': 'Question'}).status_code == 400
+    assert client.post('/search', headers=HEADERS, json={'question': 'Question', 'retrieval_mode': 'unknown'}).status_code == 422
+    assert client.get('/search', headers=HEADERS, params={'question': 'Question'}).status_code == 405
 
 
 def test_no_relevant_results_do_not_call_gemini(api, monkeypatch, sample_pdf, fake_embeddings):
@@ -82,7 +84,7 @@ def test_no_relevant_results_do_not_call_gemini(api, monkeypatch, sample_pdf, fa
     monkeypatch.setattr(main, 'generate_embeddings', lambda texts: [[-1.0] + [0.0] * 383])
     generate = Mock(side_effect=AssertionError('Gemini must not be called'))
     monkeypatch.setattr(main, 'generate_answer', generate)
-    result = client.get('/search', headers=HEADERS, params={'question': 'unrelated'})
+    result = client.post('/search', headers=HEADERS, json={'question': 'unrelated'})
     assert result.status_code == 200 and result.json()['sources'] == []
     generate.assert_not_called()
 
@@ -93,7 +95,7 @@ def test_missing_gemini_returns_503_only_when_needed(api, monkeypatch, sample_pd
     monkeypatch.setattr(llm, 'GEMINI_API_KEY', '')
     monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
     assert upload(client, sample_pdf).status_code == 200
-    result = client.get('/search', headers=HEADERS, params={'question': 'Aurora?'})
+    result = client.post('/search', headers=HEADERS, json={'question': 'Aurora?'})
     assert result.status_code == 503 and 'GEMINI_API_KEY' in result.json()['detail']
     assert main.vector_store.index.ntotal == 2
 
@@ -221,5 +223,5 @@ def test_model_refusal_does_not_claim_sources(api, monkeypatch, sample_pdf, fake
     monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
     assert upload(client, sample_pdf).status_code == 200
     monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: AnswerDraft(status='not_found', answer=NO_ANSWER))
-    result = client.get('/search', headers=HEADERS, params={'question': 'Unknown fact?'})
+    result = client.post('/search', headers=HEADERS, json={'question': 'Unknown fact?'})
     assert result.status_code == 200 and result.json()['sources'] == []
