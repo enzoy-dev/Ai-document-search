@@ -162,7 +162,7 @@ def test_sources_only_include_cited_evidence(api, monkeypatch, sample_pdf, fake_
     monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
     assert upload(client, sample_pdf).status_code == 200
     monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: AnswerDraft(status='answered', answer='Renewable energy. [S1]'))
-    result = client.get('/search', headers=HEADERS, params={'question': 'Aurora?'})
+    result = client.post('/search', headers=HEADERS, json={'question': 'Aurora?'})
     assert result.status_code == 200
     assert len(result.json()['sources']) == 1
     assert result.json()['sources'][0]['citation_id'] == 'S1'
