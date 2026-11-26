@@ -86,6 +86,9 @@ def browser_page(sample_pdf):
                 route.fulfill(json={"filename": "energia.pdf", "total_chunks": 2})
             elif path.endswith("/retrieve") or path.endswith("/search"):
                 state["headers"].append(request.headers)
+                if path.endswith("/search"):
+                    state["search_method"] = request.method
+                    state["search_payload"] = request.post_data_json
                 if state["error"]:
                     route.fulfill(status=state["error"], json={"detail": "Unavailable"})
                 else:
@@ -192,7 +195,7 @@ def test_rate_limit_message_and_recovery(browser_page):
     playwright.expect(page.get_by_role("alert")).to_be_hidden()
 
 
-def test_hybrid_selector_sends_mode_to_backend(browser_page):
+def test_hybrid_retrieval_stays_get_and_generation_uses_post(browser_page):
     from urllib.parse import parse_qs
 
     page, state = browser_page
@@ -200,9 +203,22 @@ def test_hybrid_selector_sends_mode_to_backend(browser_page):
     page.get_by_label("Método de busca").select_option("hybrid")
     with page.expect_request(
         lambda request: "/demo/retrieve?" in request.url
-    ) as pending:
+    ) as retrieval:
         ask(page)
-    assert parse_qs(urlsplit(pending.value.url).query)["retrieval_mode"] == ["hybrid"]
+    assert retrieval.value.method == "GET"
+    assert parse_qs(urlsplit(retrieval.value.url).query)["retrieval_mode"] == ["hybrid"]
+    playwright.expect(page.locator("#results")).to_be_visible()
+
+    page.get_by_label("Gerar resposta").check()
+    with page.expect_request(
+        lambda request: request.url.endswith("/demo/search")
+    ) as generated:
+        ask(page)
+    assert generated.value.method == "POST"
+    assert generated.value.post_data_json == {
+        "question": "Em que cidade funciona o projeto Aurora?",
+        "retrieval_mode": "hybrid",
+    }
     playwright.expect(page.locator("#results")).to_be_visible()
     page.set_viewport_size({"width": 390, "height": 844})
     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
