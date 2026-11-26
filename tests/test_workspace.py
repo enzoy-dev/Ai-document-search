@@ -59,8 +59,8 @@ def test_abstention_with_related_chunks_never_claims_evidence(
             status=status, answer="Which project do you mean?", language="en"
         ),
     )
-    response = client.get(
-        "/search", params={"question": "What is its cost?"}, headers=HEADERS
+    response = client.post(
+        "/search", json={"question": "What is its cost?"}, headers=HEADERS
     )
     assert response.status_code == 200
     assert response.json()["status"] == status
@@ -104,9 +104,9 @@ def test_public_demo_is_read_only_and_cannot_read_private_documents(
         "/documents",
         "/documents/private.pdf/pdf",
         "/retrieve?question=private",
-        "/search?question=private",
     ]:
         assert client.get(path, headers=HEADERS).status_code == 403
+    assert client.post("/search", json={"question": "private"}, headers=HEADERS).status_code == 403
     assert upload(client, sample_pdf).status_code == 403
     assert client.delete("/documents/private.pdf", headers=HEADERS).status_code == 403
     assert {
@@ -126,7 +126,7 @@ def test_demo_retrieval_limits_and_generation_disabled(demo, monkeypatch):
     client, main = demo
     generate = Mock(side_effect=AssertionError("Generation must remain disabled"))
     monkeypatch.setattr(main, "generate_answer", generate)
-    assert client.get("/demo/search?question=Aurora").status_code == 403
+    assert client.post("/demo/search", json={"question": "Aurora"}).status_code == 403
     for _ in range(2):
         response = client.get("/demo/retrieve?question=Aurora")
         assert response.status_code == 200
@@ -144,8 +144,8 @@ def test_demo_generation_budget_includes_failed_attempts(demo, monkeypatch):
     monkeypatch.setattr(main, "GEMINI_API_KEY", "test-key")
     generate = Mock(side_effect=ServiceUnavailableError("Provider unavailable"))
     monkeypatch.setattr(main, "generate_answer", generate)
-    assert client.get("/demo/search?question=Aurora").status_code == 503
-    assert client.get("/demo/search?question=Aurora").status_code == 429
+    assert client.post("/demo/search", json={"question": "Aurora"}).status_code == 503
+    assert client.post("/demo/search", json={"question": "Aurora"}).status_code == 429
     assert generate.call_count == 1
 
 

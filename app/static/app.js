@@ -257,8 +257,18 @@ el("question-form").addEventListener("submit", async (event) => {
   clearPdf();
   try {
     const prefix = settings.demo_mode ? "/demo" : "";
-    const query = new URLSearchParams({ question, retrieval_mode: el("retrieval-mode").value });
-    const data = await (await request(`${prefix}/${mode}?${query}`)).json();
+    const retrievalMode = el("retrieval-mode").value;
+    const response =
+      mode === "search"
+        ? await request(`${prefix}/search`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question, retrieval_mode: retrievalMode }),
+          })
+        : await request(
+            `${prefix}/retrieve?${new URLSearchParams({ question, retrieval_mode: retrievalMode })}`,
+          );
+    const data = await response.json();
     renderResults(data, mode);
   } catch (error) {
     showError(error);

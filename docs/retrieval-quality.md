@@ -2,7 +2,7 @@
 
 ## O que foi implementado
 
-A API e a interface aceitam `retrieval_mode=semantic` (padrão) ou `hybrid`.
+A API e a interface aceitam `retrieval_mode=semantic` (padrão) ou `hybrid`. A busca de trechos continua em GET; a geração de respostas usa POST com JSON para não colocar perguntas potencialmente sensíveis na URL.
 A escolha vale para aquela requisição, sem trocar pesos nem reindexar a coleção.
 As rotas privadas continuam exigindo chave; a demo continua isolada e limitada.
 
@@ -13,6 +13,11 @@ curl --get http://127.0.0.1:8000/retrieve \
   -H "X-API-Key: $API_KEY" \
   --data-urlencode 'question=Qual é a retenção do ORBITA-47?' \
   --data-urlencode 'retrieval_mode=hybrid'
+
+curl --fail-with-body -X POST http://127.0.0.1:8000/search \
+  -H "X-API-Key: $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"question":"Qual é a retenção do ORBITA-47?","retrieval_mode":"hybrid"}'
 ```
 
 O modo híbrido combina ranking BM25 de termos com ranking semântico usando

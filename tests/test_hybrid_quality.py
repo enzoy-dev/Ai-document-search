@@ -87,15 +87,15 @@ def test_api_exposes_mode_validates_it_and_explains_retrieval_miss(
     generate = Mock(return_value=AnswerDraft(status="answered", answer="14 dias [S1]"))
     monkeypatch.setattr(main, "generate_answer", generate)
     headers = {"X-API-Key": "unit-test-api-key"}
-    missing = client.get(
-        "/search", params={"question": "biblioteca"}, headers=headers
+    missing = client.post(
+        "/search", json={"question": "biblioteca"}, headers=headers
     ).json()
     assert missing["status"] == "not_found" and missing["decision_stage"] == "retrieval"
     assert missing["generation_attempted"] is False
     generate.assert_not_called()
-    answer = client.get(
+    answer = client.post(
         "/search",
-        params={"question": "biblioteca", "retrieval_mode": "hybrid"},
+        json={"question": "biblioteca", "retrieval_mode": "hybrid"},
         headers=headers,
     ).json()
     assert (
@@ -142,9 +142,9 @@ def test_generation_stage_is_distinct_from_retrieval_miss(
         "generate_answer",
         lambda **kwargs: AnswerDraft(status=status, answer="Especifique o objeto."),
     )
-    row = client.get(
+    row = client.post(
         "/search",
-        params={"question": "Qual prazo?"},
+        json={"question": "Qual prazo?"},
         headers={"X-API-Key": "unit-test-api-key"},
     ).json()
     assert row["status"] == status and row["decision_reason"] == reason
@@ -194,8 +194,8 @@ def test_malicious_pdf_does_not_authorize_fake_citations(
         lambda **kwargs: AnswerDraft(status="answered", answer="999 dias [S999]"),
     )
     assert (
-        client.get(
-            "/search", params={"question": "ORBITA-47"}, headers=headers
+        client.post(
+            "/search", json={"question": "ORBITA-47"}, headers=headers
         ).status_code
         == 503
     )
@@ -219,9 +219,9 @@ def test_structurally_valid_citation_is_not_a_factual_support_guarantee(
             status="answered", answer="A retenção é 999 dias [S1]."
         ),
     )
-    row = client.get(
+    row = client.post(
         "/search",
-        params={"question": "Retenção?"},
+        json={"question": "Retenção?"},
         headers={"X-API-Key": "unit-test-api-key"},
     ).json()
     assert row["status"] == "answered" and "999" in row["answer"]

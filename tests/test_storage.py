@@ -177,3 +177,14 @@ def test_stale_reader_keeps_coherent_snapshot_during_concurrent_deletes(tmp_path
     VectorStore(directory=tmp_path).delete_document('original.pdf')
     assert snapshot.index.ntotal == len(snapshot.chunks) == 1
     assert first.search(A) == []
+
+
+def test_stats_reads_sqlite_without_building_faiss(tmp_path, monkeypatch):
+    store = VectorStore(directory=tmp_path)
+    store.add([CHUNK, {**CHUNK, "page": 2}], [A, B], "sample.pdf")
+
+    def fail_snapshot(*args, **kwargs):
+        pytest.fail("Health statistics must not build or load a FAISS snapshot")
+
+    monkeypatch.setattr(store, "snapshot", fail_snapshot)
+    assert store.stats() == {"indexed_documents": 1, "total_chunks": 2}
