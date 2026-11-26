@@ -64,7 +64,7 @@ class SearchRequest(BaseModel):
 app = FastAPI(
     title="AI Document Search",
     description="Semantic document search API with RAG",
-    version="1.4.0",
+    version="2.0.0",
 )
 
 vector_store = VectorStore()

@@ -153,7 +153,7 @@ def test_unverifiable_answer_is_not_returned(api, monkeypatch, sample_pdf, fake_
     monkeypatch.setattr(main, 'generate_embeddings', fake_embeddings)
     assert upload(client, sample_pdf).status_code == 200
     monkeypatch.setattr(main, 'generate_answer', lambda **kwargs: AnswerDraft(status='answered', answer=answer))
-    result = client.get('/search', headers=HEADERS, params={'question': 'Aurora?'})
+    result = client.post('/search', headers=HEADERS, json={'question': 'Aurora?'})
     assert result.status_code == 503 and 'citations' in result.json()['detail']
 
 
