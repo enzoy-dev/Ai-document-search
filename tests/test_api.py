@@ -16,6 +16,11 @@ def upload(client, sample_pdf, name='sample.pdf'):
 
 def test_health_and_docs_without_keys(api, monkeypatch):
     client, main = api
+    monkeypatch.setattr(
+        main.vector_store,
+        "snapshot",
+        Mock(side_effect=AssertionError("Health must not load FAISS")),
+    )
     monkeypatch.setattr(main, 'API_KEY', '')
     monkeypatch.setattr(main, 'GEMINI_API_KEY', '')
     result = client.get('/')
@@ -23,6 +28,8 @@ def test_health_and_docs_without_keys(api, monkeypatch):
     assert result.json()['message'] == 'AI Search API is running'
     assert result.json()['gemini_configured'] is False
     assert result.json()['api_key_configured'] is False
+    assert result.json()["indexed_documents"] == 0
+    assert result.json()["total_chunks"] == 0
     assert client.get('/docs').status_code == 200
     assert client.get('/openapi.json').status_code == 200
     assert client.get('/documents', headers=HEADERS).status_code == 503

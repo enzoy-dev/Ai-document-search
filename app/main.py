@@ -131,12 +131,14 @@ def verify_api_key(x_api_key: str | None = Header(None, alias="X-API-Key")):
 @app.get("/health")
 def health():
     collection = demo_store if DEMO_MODE else vector_store
+    stats = (
+        collection.stats()
+        if collection is not None
+        else {"indexed_documents": 0, "total_chunks": 0}
+    )
     return {
         "message": "AI Search API is running",
-        "indexed_documents": len(collection.list_documents())
-        if collection is not None
-        else 0,
-        "total_chunks": collection.index.ntotal if collection is not None else 0,
+        **stats,
         "api_key_configured": bool(API_KEY and API_KEY != "changeme"),
         "gemini_configured": bool(GEMINI_API_KEY),
         "demo_mode": DEMO_MODE,

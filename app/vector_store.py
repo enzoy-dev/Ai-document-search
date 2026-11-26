@@ -184,6 +184,16 @@ class VectorStore:
             row['distance'] = max(0., float(((stored - vector[0]) ** 2).sum()))
         return fuse(semantic, lexical, k)
 
+    def stats(self):
+        """Read collection counts from SQLite without constructing the FAISS cache."""
+        with self._connection() as connection:
+            documents, chunks = connection.execute(
+                """SELECT
+                    (SELECT COUNT(*) FROM documents),
+                    (SELECT COUNT(*) FROM chunks)"""
+            ).fetchone()
+        return {"indexed_documents": documents, "total_chunks": chunks}
+
     def list_documents(self):
         with self._connection() as connection:
             return [{'filename': name, 'chunks': count} for name, count in connection.execute('''
